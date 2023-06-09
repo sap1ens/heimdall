@@ -7,7 +7,8 @@ import io.fabric8.kubernetes.client.KubernetesClient;
 import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
 import io.fabric8.kubernetes.client.dsl.Resource;
-import jakarta.enterprise.context.ApplicationScoped;
+import io.quarkus.arc.lookup.LookupIfProperty;
+import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -15,7 +16,8 @@ import org.apache.flink.kubernetes.operator.api.FlinkDeployment;
 import org.apache.flink.kubernetes.operator.api.spec.JobSpec;
 import org.eclipse.microprofile.config.inject.ConfigProperty;
 
-@ApplicationScoped
+@Singleton
+@LookupIfProperty(name = "heimdall.joblocator.k8s.operator.enabled", stringValue = "true")
 public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
   private static final String TM_NUMBER_OF_TASK_SLOTS = "taskmanager.numberOfTaskSlots";
 
@@ -47,12 +49,12 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
         getParallelism(flinkDeployment));
   }
 
-  private String getShortImage(FlinkDeployment flinkDeployment) {
+  protected String getShortImage(FlinkDeployment flinkDeployment) {
     var image = flinkDeployment.getSpec().getImage();
     return image.contains("/") ? flinkDeployment.getSpec().getImage().split("/")[1] : image;
   }
 
-  private int getParallelism(FlinkDeployment flinkDeployment) {
+  protected int getParallelism(FlinkDeployment flinkDeployment) {
     var parallelism = 0;
     // First, try to get parallelism from the job spec
     var jobSpecParallelism =
