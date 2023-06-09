@@ -1,6 +1,7 @@
 package com.sap1ens.heimdall.service;
 
 import com.sap1ens.heimdall.model.FlinkJob;
+import com.sap1ens.heimdall.model.FlinkJobType;
 import io.fabric8.kubernetes.api.model.KubernetesResourceList;
 import io.fabric8.kubernetes.api.model.ListOptions;
 import io.fabric8.kubernetes.client.KubernetesClient;
@@ -42,11 +43,16 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
     return new FlinkJob(
         flinkDeployment.getMetadata().getName(),
         flinkDeployment.getStatus().getJobStatus().getState(),
+        getJobType(flinkDeployment),
         Optional.ofNullable(flinkDeployment.getStatus().getJobStatus().getStartTime())
             .map(Long::parseLong)
             .orElse(null),
         getShortImage(flinkDeployment),
         getParallelism(flinkDeployment));
+  }
+
+  protected FlinkJobType getJobType(FlinkDeployment flinkDeployment) {
+    return flinkDeployment.getSpec().getJob() == null ? FlinkJobType.SESSION : FlinkJobType.APPLICATION;
   }
 
   protected String getShortImage(FlinkDeployment flinkDeployment) {
