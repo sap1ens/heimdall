@@ -41,6 +41,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
 
   private FlinkJob toFlinkJob(FlinkDeployment flinkDeployment) {
     return new FlinkJob(
+        flinkDeployment.getMetadata().getUid(),
         flinkDeployment.getMetadata().getName(),
         flinkDeployment.getStatus().getJobStatus().getState(),
         getJobType(flinkDeployment),
