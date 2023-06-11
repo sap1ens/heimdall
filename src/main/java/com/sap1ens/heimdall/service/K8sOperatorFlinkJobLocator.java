@@ -21,6 +21,7 @@ import org.eclipse.microprofile.config.inject.ConfigProperty;
 @LookupIfProperty(name = "heimdall.joblocator.k8s.operator.enabled", stringValue = "true")
 public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
   private static final String TM_NUMBER_OF_TASK_SLOTS = "taskmanager.numberOfTaskSlots";
+  private static final String UNKNOWN_STATUS = "UNKNOWN";
 
   @ConfigProperty(name = "heimdall.k8s.namespace-to-watch")
   String k8sNamespace;
@@ -43,7 +44,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
     return new FlinkJob(
         flinkDeployment.getMetadata().getUid(),
         flinkDeployment.getMetadata().getName(),
-        flinkDeployment.getStatus().getJobStatus().getState(),
+        Optional.ofNullable(flinkDeployment.getStatus().getJobStatus().getState()).orElse(UNKNOWN_STATUS),
         getJobType(flinkDeployment),
         Optional.ofNullable(flinkDeployment.getStatus().getJobStatus().getStartTime())
             .map(Long::parseLong)
@@ -78,8 +79,8 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
           Optional.ofNullable(flinkDeployment.getSpec().getFlinkConfiguration())
               .map(config -> config.get(TM_NUMBER_OF_TASK_SLOTS))
               .orElse(null);
-      if (taskSlots != null) {
-        var replicas = flinkDeployment.getSpec().getTaskManager().getReplicas();
+      var replicas = flinkDeployment.getSpec().getTaskManager().getReplicas();
+      if (taskSlots != null && replicas != null) {
         parallelism = Integer.parseInt(taskSlots) * replicas;
       }
     }
