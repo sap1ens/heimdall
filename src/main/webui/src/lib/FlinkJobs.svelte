@@ -11,13 +11,8 @@
     let statusFilter;
     let allFlinkJobs = [];
 
-    axios.get(API_ENDPOINT)
-        .then(function (response) {
-            allFlinkJobs = response.data;
-        })
-        .catch(function (error) {
-            loadingError = error;
-        })
+    loadFlinkJobs();
+    setInterval(loadFlinkJobs, 5000);
 
     let displayMode = 'tabular';
 
@@ -32,6 +27,17 @@
     });
 
     $: jobStatusList = [...new Set(allFlinkJobs.map(job => job.status))];
+
+    function loadFlinkJobs() {
+        axios.get(API_ENDPOINT)
+            .then(function (response) {
+                allFlinkJobs = response.data;
+                loadingError = null;
+            })
+            .catch(function (error) {
+                loadingError = error;
+            })
+    }
 
     function statusColor(status) {
         switch(status) {
