@@ -2,7 +2,7 @@
     import axios from "axios";
     import { format } from 'date-fns'
     import Fa from 'svelte-fa'
-    import { faImagePortrait, faArrowTrendUp, faArrowUpRightFromSquare } from '@fortawesome/free-solid-svg-icons'
+    import { faImagePortrait, faArrowTrendUp, faArrowUpRightFromSquare, faTable, faIdCard } from '@fortawesome/free-solid-svg-icons'
 
     const API_ENDPOINT = "http://localhost:8080/jobs";
 
@@ -64,17 +64,31 @@
     }
 </script>
 
-<div class="py-6 text-base">
-    Filter by name:
+<div class="flex items-center justify-between py-6 text-base">
+    <div>
+        Filter by name:
         <input type="text" placeholder="Flink Job name" bind:value={jobNameFilter}>
-    &nbsp;
-    Filter by status
+        &nbsp;
+        Filter by status
         <select bind:value={statusFilter}>
             <option value="">Show all</option>
-        {#each jobStatusList as status}
-            <option value="{status}">{status}</option>
-        {/each}
+            {#each jobStatusList as status}
+                <option value="{status}">{status}</option>
+            {/each}
         </select>
+    </div>
+    <div>
+        {#if displayMode === 'card'}
+        <a href="#" title="Table view" on:click={() => displayMode = 'tabular'}>
+            <Fa fw icon={faTable} size="2x" class="text-gray-500 hover:cursor-pointer" />
+        </a>
+        {/if}
+        {#if displayMode === 'tabular'}
+        <a href="#" title="Card view" on:click={() => displayMode = 'card'}>
+            <Fa fw icon={faIdCard} size="2x" class="text-gray-500 hover:cursor-pointer" />
+        </a>
+        {/if}
+    </div>
 </div>
 
 {#if loadingError}
@@ -142,6 +156,27 @@
                 {/each}
                 </tbody>
             </table>
+        {:else}
+            {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
+                <div class="border border-slate-300 p-2">
+                    <div class="flex items-start justify-between text-lg">
+                        <p>{flinkJob.name}</p>
+                        <p class="ml-1 px-1 border border-gray-500 rounded bg-white" title="Type: {flinkJob.type}">
+                            {#if flinkJob.type === 'APPLICATION'}
+                                A
+                            {:else if flinkJob.type === 'SESSION'}
+                                S
+                            {/if}
+                        </p>
+                    </div>
+                    <p class="text-sm text-gray-500">
+                        <Fa fw icon={faArrowTrendUp} /> Parallelism: {flinkJob.parallelism || 'N/A' }
+                    </p>
+                    <p class="text-sm text-gray-500">
+                        <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
+                    </p>
+                </div>
+            {/each}
         {/if}
     {:else if initialLoad}
         <p class="text-xl text-center font-bold">No Flink Jobs found</p>
