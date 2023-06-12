@@ -10,6 +10,7 @@
     let jobNameFilter;
     let statusFilter;
     let allFlinkJobs = [];
+    let initialLoad = false;
 
     loadFlinkJobs();
     setInterval(loadFlinkJobs, 5000);
@@ -33,9 +34,13 @@
             .then(function (response) {
                 allFlinkJobs = response.data;
                 loadingError = null;
+                initialLoad = true;
             })
             .catch(function (error) {
-                loadingError = error;
+                // don't show an error if we already have some loaded jobs
+                if (allFlinkJobs.length === 0) {
+                    loadingError = error;
+                }
             })
     }
 
@@ -91,7 +96,16 @@
                 {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
                     <tr>
                         <td class="border border-slate-300 p-2">
-                            <p class="text-lg">{flinkJob.name}</p>
+                            <div class="flex items-start justify-between text-lg">
+                                <p>{flinkJob.name}</p>
+                                <p class="ml-1 px-1 border border-gray-500 rounded" title="Type: {flinkJob.type}">
+                                    {#if flinkJob.type === 'APPLICATION'}
+                                        A
+                                    {:else if flinkJob.type === 'SESSION'}
+                                        S
+                                    {/if}
+                                </p>
+                            </div>
                             <p class="text-sm text-gray-500">
                                 <Fa fw icon={faArrowTrendUp} /> Parallelism: {flinkJob.parallelism || 'N/A' }
                             </p>
@@ -106,8 +120,12 @@
                             </div>
                         </td>
                         <td class="border border-slate-300 p-2">
-                            <p>1 JM (0.5 CPU, 1024M RAM)</p>
-                            <p>2 TM (1 CPU, 2048M RAM)</p>
+                            <p>{flinkJob.resources.jm.replicas} JobManager{#if flinkJob.resources.jm.replicas > 1}s{/if}
+                                ({flinkJob.resources.jm.cpu} cpu, {flinkJob.resources.jm.mem} mem)</p>
+                            {#if flinkJob.resources.tm.replicas > 0}
+                            <p>{flinkJob.resources.tm.replicas} TaskManager{#if flinkJob.resources.tm.replicas > 1}s{/if}
+                                ({flinkJob.resources.tm.cpu} cpu, {flinkJob.resources.tm.mem} mem)</p>
+                            {/if}
                         </td>
                         <td class="border border-slate-300 p-2">{formatStartTime(flinkJob.startTime)}</td>
                         <td class="border border-slate-300 p-2">
@@ -125,6 +143,8 @@
                 </tbody>
             </table>
         {/if}
+    {:else if initialLoad}
+        <p class="text-xl text-center font-bold">No Flink Jobs found</p>
     {:else}
         <p class="text-xl text-center font-bold">Loading...</p>
     {/if}
