@@ -84,7 +84,7 @@
         {#if displayMode === 'tabular'}
             <table class="table-auto w-full border">
                 <thead class="text-lg">
-                <tr>
+                <tr class="bg-slate-50">
                     <th class="border border-slate-300 p-2 w-4/12">Flink Job</th>
                     <th class="border border-slate-300 p-2 w-1/12">Status</th>
                     <th class="border border-slate-300 p-2 w-3/12">Resources</th>
@@ -94,11 +94,11 @@
                 </thead>
                 <tbody class="text-base">
                 {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
-                    <tr>
+                    <tr class="odd:bg-white even:bg-slate-50">
                         <td class="border border-slate-300 p-2">
                             <div class="flex items-start justify-between text-lg">
                                 <p>{flinkJob.name}</p>
-                                <p class="ml-1 px-1 border border-gray-500 rounded" title="Type: {flinkJob.type}">
+                                <p class="ml-1 px-1 border border-gray-500 rounded bg-white" title="Type: {flinkJob.type}">
                                     {#if flinkJob.type === 'APPLICATION'}
                                         A
                                     {:else if flinkJob.type === 'SESSION'}
