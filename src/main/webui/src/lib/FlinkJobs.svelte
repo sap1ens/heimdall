@@ -2,7 +2,7 @@
     import axios from "axios";
     import { format } from 'date-fns'
     import Fa from 'svelte-fa'
-    import { faImagePortrait, faArrowTrendUp, faArrowUpRightFromSquare, faTable, faIdCard } from '@fortawesome/free-solid-svg-icons'
+    import { faImagePortrait, faArrowTrendUp, faArrowUpRightFromSquare, faTable, faIdCard, faClock } from '@fortawesome/free-solid-svg-icons'
 
     const API_ENDPOINT = "http://localhost:8080/jobs";
 
@@ -111,21 +111,25 @@
                     <tr class="odd:bg-white even:bg-slate-50">
                         <td class="border border-slate-300 p-2">
                             <div class="flex items-start justify-between text-lg">
-                                <p>{flinkJob.name}</p>
-                                <p class="ml-1 px-1 border border-gray-500 rounded bg-white" title="Type: {flinkJob.type}">
-                                    {#if flinkJob.type === 'APPLICATION'}
-                                        A
-                                    {:else if flinkJob.type === 'SESSION'}
-                                        S
-                                    {/if}
-                                </p>
+                                <div>
+                                    <p>{flinkJob.name}</p>
+                                    <p class="text-sm text-gray-500">
+                                        <Fa fw icon={faArrowTrendUp} /> Parallelism: {flinkJob.parallelism || 'N/A' }
+                                    </p>
+                                    <p class="text-sm text-gray-500">
+                                        <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
+                                    </p>
+                                </div>
+                                <div>
+                                    <p class="ml-1 px-1 border border-gray-500 rounded bg-white" title="Type: {flinkJob.type}">
+                                        {#if flinkJob.type === 'APPLICATION'}
+                                            A
+                                        {:else if flinkJob.type === 'SESSION'}
+                                            S
+                                        {/if}
+                                    </p>
+                                </div>
                             </div>
-                            <p class="text-sm text-gray-500">
-                                <Fa fw icon={faArrowTrendUp} /> Parallelism: {flinkJob.parallelism || 'N/A' }
-                            </p>
-                            <p class="text-sm text-gray-500">
-                                <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
-                            </p>
                         </td>
                         <td class="border border-slate-300 p-2">
                             <div class="flex items-center">
@@ -144,11 +148,11 @@
                         <td class="border border-slate-300 p-2">{formatStartTime(flinkJob.startTime)}</td>
                         <td class="border border-slate-300 p-2">
                             <p>
-                                <a href="" class="text-blue-600">Flink UI <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                                <a href="" class="text-blue-600 mr-1">Flink UI <Fa fw icon={faArrowUpRightFromSquare} /></a>
                                 <a href="" class="text-blue-600">Flink API <Fa fw icon={faArrowUpRightFromSquare} /></a>
                             </p>
                             <p>
-                                <a href="" class="text-blue-600">Metrics <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                                <a href="" class="text-blue-600 mr-1">Metrics <Fa fw icon={faArrowUpRightFromSquare} /></a>
                                 <a href="" class="text-blue-600">Logs <Fa fw icon={faArrowUpRightFromSquare} /></a>
                             </p>
                         </td>
@@ -157,9 +161,10 @@
                 </tbody>
             </table>
         {:else}
+            <div class="grid gap-6 grid-cols-3">
             {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
                 <div class="border border-slate-300 p-2">
-                    <div class="flex items-start justify-between text-lg">
+                    <div class="flex items-start justify-between pb-4 text-lg">
                         <p>{flinkJob.name}</p>
                         <p class="ml-1 px-1 border border-gray-500 rounded bg-white" title="Type: {flinkJob.type}">
                             {#if flinkJob.type === 'APPLICATION'}
@@ -169,14 +174,30 @@
                             {/if}
                         </p>
                     </div>
-                    <p class="text-sm text-gray-500">
-                        <Fa fw icon={faArrowTrendUp} /> Parallelism: {flinkJob.parallelism || 'N/A' }
-                    </p>
-                    <p class="text-sm text-gray-500">
-                        <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
+                    <div class="flex items-center pb-4">
+                        <div class="mr-1.5 w-4 h-4 rounded-full bg-{statusColor(flinkJob.status)}-500"></div>
+                        {flinkJob.status}
+                    </div>
+                    <div class="pb-4">
+                        <p class="text-sm text-gray-500">
+                            <Fa fw icon={faArrowTrendUp} /> Parallelism: {flinkJob.parallelism || 'N/A' }
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            <Fa fw icon={faClock} /> Started at: {formatStartTime(flinkJob.startTime)}
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
+                        </p>
+                    </div>
+                    <p>
+                        <a href="" class="text-blue-600 mr-1">Flink UI <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                        <a href="" class="text-blue-600 mr-1">Flink API <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                        <a href="" class="text-blue-600 mr-1">Metrics <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                        <a href="" class="text-blue-600">Logs <Fa fw icon={faArrowUpRightFromSquare} /></a>
                     </p>
                 </div>
             {/each}
+            </div>
         {/if}
     {:else if initialLoad}
         <p class="text-xl text-center font-bold">No Flink Jobs found</p>
