@@ -1,5 +1,6 @@
 package com.sap1ens.heimdall.service;
 
+import com.sap1ens.heimdall.AppConfig;
 import com.sap1ens.heimdall.model.FlinkJob;
 import com.sap1ens.heimdall.model.FlinkJobResources;
 import com.sap1ens.heimdall.model.FlinkJobType;
@@ -10,6 +11,7 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
 import io.fabric8.kubernetes.client.dsl.Resource;
 import io.quarkus.arc.lookup.LookupIfProperty;
+import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.List;
 import java.util.Map;
@@ -17,18 +19,17 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 import org.apache.flink.kubernetes.operator.api.FlinkDeployment;
 import org.apache.flink.kubernetes.operator.api.spec.JobSpec;
-import org.eclipse.microprofile.config.inject.ConfigProperty;
 
 @Singleton
-@LookupIfProperty(name = "heimdall.joblocator.k8s.operator.enabled", stringValue = "true")
+@LookupIfProperty(name = "heimdall.joblocator.k8s-operator.enabled", stringValue = "true")
 public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
   private static final String TM_NUMBER_OF_TASK_SLOTS = "taskmanager.numberOfTaskSlots";
   private static final String UNKNOWN_STATUS = "UNKNOWN";
   private static final String JM_LABEL = "jm";
   private static final String TM_LABEL = "tm";
 
-  @ConfigProperty(name = "heimdall.k8s.namespace-to-watch")
-  String k8sNamespace;
+  @Inject
+  AppConfig appConfig;
 
   private KubernetesClient ks8Client = new KubernetesClientBuilder().build();
 
@@ -40,7 +41,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
   public List<FlinkJob> findAll() {
     var listOptions = new ListOptions();
     var flinkDeployments =
-        flinkDeploymentK8Client.inNamespace(k8sNamespace).list(listOptions).getItems();
+        flinkDeploymentK8Client.inNamespace(appConfig.joblocator().k8sOperator().namespaceToWatch()).list(listOptions).getItems();
     return flinkDeployments.stream().map(this::toFlinkJob).collect(Collectors.toList());
   }
 
