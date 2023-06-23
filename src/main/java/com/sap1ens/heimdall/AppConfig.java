@@ -2,12 +2,14 @@ package com.sap1ens.heimdall;
 
 import io.smallrye.config.ConfigMapping;
 
+import java.util.Map;
+
 
 @ConfigMapping(prefix = "heimdall")
 public interface AppConfig {
   Joblocator joblocator();
 
-  EndpointPathPatterns endpointPathPatterns();
+  Map<String, String> endpointPathPatterns();
 
   interface Joblocator {
     K8sOperator k8sOperator();
@@ -16,11 +18,5 @@ public interface AppConfig {
       boolean enabled();
       String namespaceToWatch();
     }
-  }
-  interface EndpointPathPatterns {
-    String flinkUi();
-    String flinkApi();
-    String metrics();
-    String logs();
   }
 }

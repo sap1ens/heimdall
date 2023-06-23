@@ -4,7 +4,10 @@
     import Fa from 'svelte-fa'
     import { faImagePortrait, faArrowTrendUp, faArrowUpRightFromSquare, faTable, faIdCard, faClock } from '@fortawesome/free-solid-svg-icons'
 
-    const API_ENDPOINT = "http://localhost:8080/jobs";
+    import { appConfig } from "./stores.js";
+
+    const API_ROOT = "http://localhost:8080";
+    const JOBS_ENDPOINT = `${API_ROOT}/jobs`;
 
     let loadingError;
     let jobNameFilter;
@@ -13,7 +16,7 @@
     let initialLoad = false;
 
     loadFlinkJobs();
-    setInterval(loadFlinkJobs, 5000);
+    setInterval(loadFlinkJobs, 10000);
 
     let displayMode = 'tabular';
 
@@ -30,7 +33,7 @@
     $: jobStatusList = [...new Set(allFlinkJobs.map(job => job.status))];
 
     function loadFlinkJobs() {
-        axios.get(API_ENDPOINT)
+        axios.get(JOBS_ENDPOINT)
             .then(function (response) {
                 allFlinkJobs = response.data;
                 loadingError = null;
@@ -56,6 +59,10 @@
             default:
                 return 'yellow';
         }
+    }
+
+    function processEndpointPathPattern(pattern, jobName) {
+        return pattern.replace('$jobName', jobName);
     }
 
     function formatStartTime(startTime) {
@@ -148,12 +155,12 @@
                         <td class="border border-slate-300 p-2">{formatStartTime(flinkJob.startTime)}</td>
                         <td class="border border-slate-300 p-2">
                             <p>
-                                <a href="" class="text-blue-600 mr-1">Flink UI <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                                <a href="" class="text-blue-600">Flink API <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                                <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.['flink-ui'], flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Flink UI <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                                <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.['flink-api'], flinkJob.name)}" target="_blank" class="text-blue-600">Flink API <Fa fw icon={faArrowUpRightFromSquare} /></a>
                             </p>
                             <p>
-                                <a href="" class="text-blue-600 mr-1">Metrics <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                                <a href="" class="text-blue-600">Logs <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                                <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.metrics, flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Metrics <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                                <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.logs, flinkJob.name)}" target="_blank" class="text-blue-600">Logs <Fa fw icon={faArrowUpRightFromSquare} /></a>
                             </p>
                         </td>
                     </tr>
@@ -190,10 +197,10 @@
                         </p>
                     </div>
                     <p>
-                        <a href="" class="text-blue-600 mr-1">Flink UI <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                        <a href="" class="text-blue-600 mr-1">Flink API <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                        <a href="" class="text-blue-600 mr-1">Metrics <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                        <a href="" class="text-blue-600">Logs <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                        <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.['flink-ui'], flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Flink UI <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                        <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.['flink-api'], flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Flink API <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                        <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.metrics, flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Metrics <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                        <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.logs, flinkJob.name)}" target="_blank" class="text-blue-600">Logs <Fa fw icon={faArrowUpRightFromSquare} /></a>
                     </p>
                 </div>
             {/each}
