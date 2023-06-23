@@ -2,9 +2,10 @@
     import axios from "axios";
     import { format } from 'date-fns'
     import Fa from 'svelte-fa'
-    import { faImagePortrait, faArrowTrendUp, faArrowUpRightFromSquare, faTable, faIdCard, faClock } from '@fortawesome/free-solid-svg-icons'
+    import { faImagePortrait, faArrowTrendUp, faTable, faIdCard, faClock } from '@fortawesome/free-solid-svg-icons'
 
-    import { appConfig } from "./stores.js";
+    import ExternalEndpoint from "./ExternalEndpoint.svelte";
+    import JobType from "./JobType.svelte";
 
     const API_ROOT = "http://localhost:8080";
     const JOBS_ENDPOINT = `${API_ROOT}/jobs`;
@@ -59,10 +60,6 @@
             default:
                 return 'yellow';
         }
-    }
-
-    function processEndpointPathPattern(pattern, jobName) {
-        return pattern.replace('$jobName', jobName);
     }
 
     function formatStartTime(startTime) {
@@ -128,13 +125,7 @@
                                     </p>
                                 </div>
                                 <div>
-                                    <p class="ml-1 px-1 border border-gray-500 rounded bg-white" title="Type: {flinkJob.type}">
-                                        {#if flinkJob.type === 'APPLICATION'}
-                                            A
-                                        {:else if flinkJob.type === 'SESSION'}
-                                            S
-                                        {/if}
-                                    </p>
+                                    <JobType type={flinkJob.type} />
                                 </div>
                             </div>
                         </td>
@@ -155,12 +146,12 @@
                         <td class="border border-slate-300 p-2">{formatStartTime(flinkJob.startTime)}</td>
                         <td class="border border-slate-300 p-2">
                             <p>
-                                <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.['flink-ui'], flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Flink UI <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                                <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.['flink-api'], flinkJob.name)}" target="_blank" class="text-blue-600">Flink API <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                                <ExternalEndpoint type="flink-ui" title="Flink UI" jobName="{flinkJob.name}" />
+                                <ExternalEndpoint type="flink-api" title="Flink API" jobName="{flinkJob.name}" />
                             </p>
                             <p>
-                                <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.metrics, flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Metrics <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                                <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.logs, flinkJob.name)}" target="_blank" class="text-blue-600">Logs <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                                <ExternalEndpoint type="metrics" title="Metrics" jobName="{flinkJob.name}" />
+                                <ExternalEndpoint type="logs" title="Logs" jobName="{flinkJob.name}" />
                             </p>
                         </td>
                     </tr>
@@ -173,13 +164,7 @@
                 <div class="border border-slate-300 p-2">
                     <div class="flex items-start justify-between pb-4 text-lg">
                         <p>{flinkJob.name}</p>
-                        <p class="ml-1 px-1 border border-gray-500 rounded bg-white" title="Type: {flinkJob.type}">
-                            {#if flinkJob.type === 'APPLICATION'}
-                                A
-                            {:else if flinkJob.type === 'SESSION'}
-                                S
-                            {/if}
-                        </p>
+                        <JobType type={flinkJob.type} />
                     </div>
                     <div class="flex items-center pb-4">
                         <div class="mr-1.5 w-4 h-4 rounded-full bg-{statusColor(flinkJob.status)}-500"></div>
@@ -197,10 +182,10 @@
                         </p>
                     </div>
                     <p>
-                        <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.['flink-ui'], flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Flink UI <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                        <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.['flink-api'], flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Flink API <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                        <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.metrics, flinkJob.name)}" target="_blank" class="text-blue-600 mr-1">Metrics <Fa fw icon={faArrowUpRightFromSquare} /></a>
-                        <a href="{processEndpointPathPattern($appConfig?.endpointPathPatterns?.logs, flinkJob.name)}" target="_blank" class="text-blue-600">Logs <Fa fw icon={faArrowUpRightFromSquare} /></a>
+                        <ExternalEndpoint type="flink-ui" title="Flink UI" jobName="{flinkJob.name}" />
+                        <ExternalEndpoint type="flink-api" title="Flink API" jobName="{flinkJob.name}" />
+                        <ExternalEndpoint type="metrics" title="Metrics" jobName="{flinkJob.name}" />
+                        <ExternalEndpoint type="logs" title="Logs" jobName="{flinkJob.name}" />
                     </p>
                 </div>
             {/each}
