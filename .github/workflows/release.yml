@@ -39,5 +39,5 @@ jobs:
           FULL_IMAGE_NAME: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         run: |
           version=$(gradle properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
-          gradle build -i -Dquarkus.container-image.build=true -Dquarkus.container-image.image=$FULL_IMAGE_NAME:$version
-          docker push $FULL_IMAGE_NAME:$version
+          echo "Using version: $version"
+          gradle build -i -Dquarkus.container-image.build=true -Dquarkus.container-image.image=$FULL_IMAGE_NAME:$version -Dquarkus.container-image.push=true
