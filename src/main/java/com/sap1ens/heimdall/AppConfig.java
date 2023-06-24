@@ -1,9 +1,7 @@
 package com.sap1ens.heimdall;
 
 import io.smallrye.config.ConfigMapping;
-
 import java.util.Map;
-
 
 @ConfigMapping(prefix = "heimdall")
 public interface AppConfig {
@@ -16,6 +14,7 @@ public interface AppConfig {
 
     interface K8sOperator {
       boolean enabled();
+
       String namespaceToWatch();
     }
   }

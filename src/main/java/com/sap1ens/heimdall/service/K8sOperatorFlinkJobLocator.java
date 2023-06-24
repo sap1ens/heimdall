@@ -28,8 +28,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
   private static final String JM_LABEL = "jm";
   private static final String TM_LABEL = "tm";
 
-  @Inject
-  AppConfig appConfig;
+  @Inject AppConfig appConfig;
 
   private KubernetesClient ks8Client = new KubernetesClientBuilder().build();
 
@@ -41,7 +40,10 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
   public List<FlinkJob> findAll() {
     var listOptions = new ListOptions();
     var flinkDeployments =
-        flinkDeploymentK8Client.inNamespace(appConfig.joblocator().k8sOperator().namespaceToWatch()).list(listOptions).getItems();
+        flinkDeploymentK8Client
+            .inNamespace(appConfig.joblocator().k8sOperator().namespaceToWatch())
+            .list(listOptions)
+            .getItems();
     return flinkDeployments.stream().map(this::toFlinkJob).collect(Collectors.toList());
   }
 
