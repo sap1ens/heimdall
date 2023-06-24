@@ -1,6 +1,11 @@
 name: release
 
-on: [ workflow_dispatch ]
+on:
+  workflow_dispatch:
+    inputs:
+      snapshot:
+        description: 'Use snapshot version?'
+        required: true
 
 env:
   REGISTRY: ghcr.io
@@ -39,5 +44,8 @@ jobs:
           FULL_IMAGE_NAME: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         run: |
           version=$(gradle properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
+          if [ "${{ github.event.inputs.snapshot }}" != "true" ]; then
+              version="${version//-SNAPSHOT/}"
+          fi
           echo "Using version: $version"
           gradle build -i -Dquarkus.container-image.build=true -Dquarkus.container-image.image=$FULL_IMAGE_NAME:$version -Dquarkus.container-image.push=true
