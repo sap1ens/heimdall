@@ -4,24 +4,16 @@
     import Fa from 'svelte-fa'
     import { faImagePortrait, faArrowTrendUp, faTable, faIdCard, faClock } from '@fortawesome/free-solid-svg-icons'
 
+    import { flinkJobs } from "./stores/flinkJobs.js";
     import ExternalEndpoint from "./ExternalEndpoint.svelte";
     import JobType from "./JobType.svelte";
 
-    const API_ROOT = "http://localhost:8080";
-    const JOBS_ENDPOINT = `${API_ROOT}/jobs`;
-
-    let loadingError;
     let jobNameFilter;
     let statusFilter;
-    let allFlinkJobs = [];
-    let initialLoad = false;
-
-    loadFlinkJobs();
-    setInterval(loadFlinkJobs, 10000);
 
     let displayMode = 'tabular';
 
-    $: visibleFlinkJobs = allFlinkJobs.filter(job => {
+    $: visibleFlinkJobs = $flinkJobs.data.filter(job => {
         if (jobNameFilter) {
             return job.name.includes(jobNameFilter);
         }
@@ -31,22 +23,7 @@
         return true;
     });
 
-    $: jobStatusList = [...new Set(allFlinkJobs.map(job => job.status))];
-
-    function loadFlinkJobs() {
-        axios.get(JOBS_ENDPOINT)
-            .then(function (response) {
-                allFlinkJobs = response.data;
-                loadingError = null;
-                initialLoad = true;
-            })
-            .catch(function (error) {
-                // don't show an error if we already have some loaded jobs
-                if (allFlinkJobs.length === 0) {
-                    loadingError = error;
-                }
-            })
-    }
+    $: jobStatusList = [...new Set($flinkJobs.data.map(job => job.status))];
 
     function statusColor(status) {
         switch(status) {
@@ -95,8 +72,8 @@
     </div>
 </div>
 
-{#if loadingError}
-    <p class="text-xl text-center text-red-500 font-bold">Couldn't load data: {loadingError}</p>
+{#if $flinkJobs.error}
+    <p class="text-xl text-center text-red-500 font-bold">Couldn't load data: {$flinkJobs.error}</p>
 {:else}
     {#if visibleFlinkJobs.length > 0 || jobNameFilter || statusFilter}
         {#if displayMode === 'tabular'}
@@ -191,7 +168,7 @@
             {/each}
             </div>
         {/if}
-    {:else if initialLoad}
+    {:else if $flinkJobs.loaded}
         <p class="text-xl text-center font-bold">No Flink Jobs found</p>
     {:else}
         <p class="text-xl text-center font-bold">Loading...</p>

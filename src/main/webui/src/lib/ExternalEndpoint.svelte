@@ -2,7 +2,7 @@
 import {faArrowUpRightFromSquare} from "@fortawesome/free-solid-svg-icons";
 import Fa from "svelte-fa";
 
-import { appConfig } from "./stores.js";
+import { appConfig } from "./stores/appConfig.js";
 
 export let jobName;
 export let type;
