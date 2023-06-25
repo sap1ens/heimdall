@@ -1,9 +1,6 @@
 import { writable } from 'svelte/store'
 import axios from "axios";
 
-const API_ROOT = "http://localhost:8080";
-const JOBS_ENDPOINT = `${API_ROOT}/jobs`;
-
 const REFRESH_INTERVAL_MS = 10000;
 
 let allFlinkJobs = [];
@@ -17,7 +14,7 @@ function createDataStore() {
     });
 
     function loadJobs() {
-        axios.get(JOBS_ENDPOINT)
+        axios.get('jobs')
             .then(function (response) {
                 allFlinkJobs = response.data;
                 set({
