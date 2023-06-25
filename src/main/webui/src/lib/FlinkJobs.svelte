@@ -2,7 +2,7 @@
     import axios from "axios";
     import { format } from 'date-fns'
     import Fa from 'svelte-fa'
-    import { faImagePortrait, faArrowTrendUp, faTable, faIdCard, faClock } from '@fortawesome/free-solid-svg-icons'
+    import { faImagePortrait, faChartColumn, faTable, faIdCard, faClock } from '@fortawesome/free-solid-svg-icons'
 
     import { flinkJobs } from "./stores/flinkJobs.js";
     import ExternalEndpoint from "./ExternalEndpoint.svelte";
@@ -95,7 +95,7 @@
                                 <div>
                                     <p>{flinkJob.name}</p>
                                     <p class="text-sm text-gray-500">
-                                        <Fa fw icon={faArrowTrendUp} /> Parallelism: {flinkJob.parallelism || 'N/A' }
+                                        <Fa fw icon={faChartColumn} /> Parallelism: {flinkJob.parallelism || 'N/A' }
                                     </p>
                                     <p class="text-sm text-gray-500">
                                         <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
@@ -113,11 +113,11 @@
                             </div>
                         </td>
                         <td class="border border-slate-300 p-2">
-                            <p>{flinkJob.resources.jm.replicas} JobManager{#if flinkJob.resources.jm.replicas > 1}s{/if}
-                                ({flinkJob.resources.jm.cpu} cpu, {flinkJob.resources.jm.mem} mem)</p>
+                            <p>JobManager{#if flinkJob.resources.jm.replicas > 1}s{/if}:
+                                <strong>{flinkJob.resources.jm.replicas}</strong> x {flinkJob.resources.jm.cpu} cpu, {flinkJob.resources.jm.mem} memory</p>
                             {#if flinkJob.resources.tm.replicas > 0}
-                            <p>{flinkJob.resources.tm.replicas} TaskManager{#if flinkJob.resources.tm.replicas > 1}s{/if}
-                                ({flinkJob.resources.tm.cpu} cpu, {flinkJob.resources.tm.mem} mem)</p>
+                            <p>TaskManager{#if flinkJob.resources.tm.replicas > 1}s{/if}:
+                                <strong>{flinkJob.resources.tm.replicas}</strong> x {flinkJob.resources.tm.cpu} cpu, {flinkJob.resources.tm.mem} memory</p>
                             {/if}
                         </td>
                         <td class="border border-slate-300 p-2">{formatStartTime(flinkJob.startTime)}</td>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="pb-4">
                         <p class="text-sm text-gray-500">
-                            <Fa fw icon={faArrowTrendUp} /> Parallelism: {flinkJob.parallelism || 'N/A' }
+                            <Fa fw icon={faChartColumn} /> Parallelism: {flinkJob.parallelism || 'N/A' }
                         </p>
                         <p class="text-sm text-gray-500">
                             <Fa fw icon={faClock} /> Started at: {formatStartTime(flinkJob.startTime)}
