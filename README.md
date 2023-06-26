@@ -7,7 +7,7 @@ a single job, but what if you have 10 or 100? Heimdall helps to keep track of al
 
 Currently, Heimdall only supports Flink jobs deployed with [Flink Kubernetes Operator](https://ci.apache.org/projects/flink/flink-kubernetes-operator-docs-stable/).
 
-## Quick Start
+## Quick (and Dirty) Start
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/sap1ens/heimdall/main/tools/k8s-operator/service-account.yaml
