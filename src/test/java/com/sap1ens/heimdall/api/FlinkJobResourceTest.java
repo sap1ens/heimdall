@@ -38,13 +38,14 @@ public class FlinkJobResourceTest {
                     FlinkJobType.APPLICATION,
                     1687261027814L,
                     "testImage",
+                    null,
                     1,
                     Collections.emptyMap(),
                     Collections.emptyMap())));
 
     var payload =
         """
-        [{"id":"testId","name":"testName","status":"RUNNING","type":"APPLICATION","startTime":1687261027814,"shortImage":"testImage","parallelism":1,"resources":{},"metadata":{}}]""";
+        [{"id":"testId","name":"testName","status":"RUNNING","type":"APPLICATION","startTime":1687261027814,"shortImage":"testImage","flinkVersion":null,"parallelism":1,"resources":{},"metadata":{}}]""";
 
     given().when().get("/jobs").then().statusCode(200).body(is(payload));
   }

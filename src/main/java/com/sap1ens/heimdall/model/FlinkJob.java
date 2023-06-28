@@ -9,6 +9,7 @@ public record FlinkJob(
     FlinkJobType type,
     Long startTime,
     String shortImage,
+    String flinkVersion,
     Integer parallelism,
     Map<String, FlinkJobResources> resources,
     Map<String, String> metadata) {}

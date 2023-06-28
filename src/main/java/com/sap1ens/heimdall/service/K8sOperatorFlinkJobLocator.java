@@ -69,6 +69,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
             .map(Long::parseLong)
             .orElse(null),
         getShortImage(flinkDeployment),
+        getFlinkVersion(flinkDeployment),
         getParallelism(flinkDeployment),
         Map.of(
             JM_LABEL,
@@ -118,5 +119,10 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
       }
     }
     return parallelism;
+  }
+
+  protected String getFlinkVersion(FlinkDeployment flinkDeployment) {
+    String rawVersion = flinkDeployment.getSpec().getFlinkVersion().toString();
+    return rawVersion.replace("_", ".").replace("v", "");
   }
 }

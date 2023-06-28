@@ -2,7 +2,7 @@
     import axios from "axios";
     import { format } from 'date-fns'
     import Fa from 'svelte-fa'
-    import { faImagePortrait, faChartColumn, faTable, faIdCard, faClock } from '@fortawesome/free-solid-svg-icons'
+    import { faImagePortrait, faChartColumn, faTable, faIdCard, faClock, faInfo } from '@fortawesome/free-solid-svg-icons'
 
     import { appConfig } from "./stores/appConfig.js";
     import { flinkJobs } from "./stores/flinkJobs.js";
@@ -112,6 +112,11 @@
                                     <p class="text-sm text-gray-500">
                                         <Fa fw icon={faChartColumn} /> Parallelism: {flinkJob.parallelism || 'N/A' }
                                     </p>
+                                    {#if flinkJob.flinkVersion}
+                                    <p class="text-sm text-gray-500">
+                                        <Fa fw icon={faInfo} /> Flink version: {flinkJob.flinkVersion}
+                                    </p>
+                                    {/if}
                                     <p class="text-sm text-gray-500">
                                         <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
                                     </p>
@@ -169,6 +174,11 @@
                         <p class="text-sm text-gray-500">
                             <Fa fw icon={faClock} /> Started at: {formatStartTime(flinkJob.startTime)}
                         </p>
+                        {#if flinkJob.flinkVersion}
+                            <p class="text-sm text-gray-500">
+                                <Fa fw icon={faInfo} /> Flink version: {flinkJob.flinkVersion}
+                            </p>
+                        {/if}
                         <p class="text-sm text-gray-500">
                             <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
                         </p>
