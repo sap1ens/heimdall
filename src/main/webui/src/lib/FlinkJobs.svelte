@@ -4,6 +4,7 @@
     import Fa from 'svelte-fa'
     import { faImagePortrait, faChartColumn, faTable, faIdCard, faClock } from '@fortawesome/free-solid-svg-icons'
 
+    import { appConfig } from "./stores/appConfig.js";
     import { flinkJobs } from "./stores/flinkJobs.js";
     import ExternalEndpoint from "./ExternalEndpoint.svelte";
     import JobType from "./JobType.svelte";
@@ -15,7 +16,7 @@
 
     $: visibleFlinkJobs = $flinkJobs.data.filter(job => {
         if (jobNameFilter) {
-            return job.name.includes(jobNameFilter);
+            return displayName(job).includes(jobNameFilter);
         }
         if (statusFilter) {
             return job.status === statusFilter;
@@ -24,6 +25,8 @@
     });
 
     $: jobStatusList = [...new Set($flinkJobs.data.map(job => job.status))];
+
+    $: displayNamePattern = $appConfig?.patterns?.['display-name'];
 
     function statusColor(status) {
         switch(status) {
@@ -42,6 +45,18 @@
     function formatStartTime(startTime) {
         if (startTime == null) return '';
         return format(new Date(startTime), 'yyyy-MM-dd HH:mm:ss OOO')
+    }
+
+    function displayName(flinkJob) {
+        let name = displayNamePattern.replace('$jobName', flinkJob.name);
+        if (Object.keys(flinkJob.metadata).length > 0) {
+            for (const [key, value] of Object.entries(flinkJob.metadata)) {
+                name = name.replace(`$metadata.${key}`, value);
+            }
+        } else {
+            name = name.replace(/.?\$metadata\.[^ ]*/g, '');
+        }
+        return name;
     }
 </script>
 
@@ -93,7 +108,7 @@
                         <td class="border border-slate-300 p-2">
                             <div class="flex items-start justify-between text-lg">
                                 <div>
-                                    <p>{flinkJob.name}</p>
+                                    <p>{displayName(flinkJob)}</p>
                                     <p class="text-sm text-gray-500">
                                         <Fa fw icon={faChartColumn} /> Parallelism: {flinkJob.parallelism || 'N/A' }
                                     </p>
@@ -140,7 +155,7 @@
             {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
                 <div class="border border-slate-300 p-2">
                     <div class="flex items-start justify-between pb-4 text-lg">
-                        <p>{flinkJob.name}</p>
+                        <p>{displayName(flinkJob)}</p>
                         <JobType type={flinkJob.type} />
                     </div>
                     <div class="flex items-center pb-4">

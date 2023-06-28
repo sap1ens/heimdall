@@ -7,6 +7,8 @@ import java.util.Map;
 public interface AppConfig {
   Joblocator joblocator();
 
+  Map<String, String> patterns();
+
   Map<String, String> endpointPathPatterns();
 
   interface Joblocator {

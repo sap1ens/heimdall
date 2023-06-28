@@ -10,4 +10,5 @@ public record FlinkJob(
     Long startTime,
     String shortImage,
     Integer parallelism,
-    Map<String, FlinkJobResources> resources) {}
+    Map<String, FlinkJobResources> resources,
+    Map<String, String> metadata) {}

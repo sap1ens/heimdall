@@ -80,7 +80,8 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
                 new FlinkJobResources(
                     tmReplicas,
                     tmSpec.getResource().getCpu().toString(),
-                    tmSpec.getResource().getMemory())));
+                    tmSpec.getResource().getMemory())),
+        flinkDeployment.getMetadata().getLabels());
   }
 
   protected FlinkJobType getJobType(FlinkDeployment flinkDeployment) {

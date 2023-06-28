@@ -14,6 +14,8 @@ public class AppConfigResource {
   @GET
   public Map<String, Object> index() {
     // Only cherry-picking certain properties, don't need to show the whole config
-    return Map.of("endpointPathPatterns", appConfig.endpointPathPatterns());
+    return Map.of(
+        "patterns", appConfig.patterns(),
+        "endpointPathPatterns", appConfig.endpointPathPatterns());
   }
 }
