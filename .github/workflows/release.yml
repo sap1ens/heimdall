@@ -48,4 +48,4 @@ jobs:
               version="${version//-SNAPSHOT/}"
           fi
           echo "Using version: $version"
-          gradle build -i -Dquarkus.container-image.build=true -Dquarkus.container-image.image=$FULL_IMAGE_NAME:$version -Dquarkus.container-image.push=true
+          gradle build -i -Pversion=$version -Dquarkus.container-image.build=true -Dquarkus.container-image.image=$FULL_IMAGE_NAME:$version -Dquarkus.container-image.push=true

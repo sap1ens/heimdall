@@ -27,7 +27,6 @@ dependencies {
 }
 
 group 'com.sap1ens'
-version '0.2.0-SNAPSHOT'
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17
