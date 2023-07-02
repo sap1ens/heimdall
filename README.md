@@ -1,11 +1,11 @@
 # Heimdall
 
-![](src/main/webui/src/assets/heimdall-logo.png)
-
-Heimdall is a dashboard for managing Flink jobs and deployment. Built-in Flink UI is extremely useful when dealing with
-a single job, but what if you have 10 or 100? Heimdall helps to keep track of all your Flink jobs, search, filter and navigate them.
+Heimdall is a dashboard for managing Flink jobs and deployments. Built-in Flink UI is extremely useful when dealing with
+a single job, but what if you have 10, 20 or 100? Heimdall helps to keep track of all your Flink jobs, search, filter, sort and navigate them.
 
 Currently, Heimdall only supports Flink jobs deployed with [Flink Kubernetes Operator](https://ci.apache.org/projects/flink/flink-kubernetes-operator-docs-stable/).
+
+![](docs/assets/demo.gif)
 
 ## Quick (and Dirty) Start
 
@@ -34,12 +34,13 @@ A service account with read-only access to `flinkdeployment` CR is required. See
 
 ### Common
 
-| Config option                             | Environment variable                      | Default                           | Description                                                         |
-|-------------------------------------------|-------------------------------------------|-----------------------------------|---------------------------------------------------------------------|
-| heimdall.endpoint-path-patterns.flink-ui  | HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_UI  | http://localhost/$jobName/ui      | Pattern for the Flink UI endpoint. `$jobName` will be substituted.  |
-| heimdall.endpoint-path-patterns.flink-api | HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_API | http://localhost/$jobName/api     | Pattern for the Flink API endpoint. `$jobName` will be substituted. |
-| heimdall.endpoint-path-patterns.metrics   | HEIMDALL_ENDPOINT_PATH_PATTERNS_METRICS   | http://localhost/$jobName/metrics | Pattern for the Metrics endpoint. `$jobName` will be substituted.   |
-| heimdall.endpoint-path-patterns.logs      | HEIMDALL_ENDPOINT_PATH_PATTERNS_LOGS      | http://localhost/$jobName/logs    | Pattern for the Logs endpoint. `$jobName` will be substituted.      |
+| Config option                             | Environment variable                      | Default                           | Description                                                                                                                    |
+|-------------------------------------------|-------------------------------------------|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| heimdall.patterns.display-name            | HEIMDALL_PATTERNS_DISPLAY_NAME            | $jobName                          | Pattern for showing Flink job name. Metadata fields (e.g. Kubernetes labels) can be accessed via `$metadata.labelName` syntax. |
+| heimdall.endpoint-path-patterns.flink-ui  | HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_UI  | http://localhost/$jobName/ui      | Pattern for the Flink UI endpoint. `$jobName` will be substituted.                                                             |
+| heimdall.endpoint-path-patterns.flink-api | HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_API | http://localhost/$jobName/api     | Pattern for the Flink API endpoint. `$jobName` will be substituted.                                                            |
+| heimdall.endpoint-path-patterns.metrics   | HEIMDALL_ENDPOINT_PATH_PATTERNS_METRICS   | http://localhost/$jobName/metrics | Pattern for the Metrics endpoint. `$jobName` will be substituted.                                                              |
+| heimdall.endpoint-path-patterns.logs      | HEIMDALL_ENDPOINT_PATH_PATTERNS_LOGS      | http://localhost/$jobName/logs    | Pattern for the Logs endpoint. `$jobName` will be substituted.                                                                 |
 
 ### K8sOperatorFlinkJobLocator
 
