@@ -48,4 +48,11 @@ jobs:
               version="${version//-SNAPSHOT/}"
           fi
           echo "Using version: $version"
+          echo "heimdall_version=$version" >> "$GITHUB_ENV"
           gradle build -i -Pversion=$version -Dquarkus.container-image.build=true -Dquarkus.container-image.image=$FULL_IMAGE_NAME:$version -Dquarkus.container-image.push=true
+
+      - name: Git tag
+        uses: rickstaa/action-create-tag@v1
+        with:
+          tag: "${{ env.heimdall_version }}"
+          tag_exists_error: false
