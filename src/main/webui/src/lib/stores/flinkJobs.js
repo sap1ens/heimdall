@@ -1,5 +1,5 @@
 import { writable } from 'svelte/store'
-import axios from "axios";
+import axios from 'axios';
 
 const REFRESH_INTERVAL_MS = 10000;
 

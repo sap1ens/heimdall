@@ -1,13 +1,13 @@
 <script>
-    import axios from "axios";
+    import axios from 'axios';
     import { format } from 'date-fns'
     import Fa from 'svelte-fa'
     import { faImagePortrait, faChartColumn, faTable, faIdCard, faClock, faInfo } from '@fortawesome/free-solid-svg-icons'
 
-    import { appConfig } from "./stores/appConfig.js";
-    import { flinkJobs } from "./stores/flinkJobs.js";
-    import ExternalEndpoint from "./ExternalEndpoint.svelte";
-    import JobType from "./JobType.svelte";
+    import { appConfig } from './stores/appConfig.js';
+    import { flinkJobs } from './stores/flinkJobs.js';
+    import ExternalEndpoint from './ExternalEndpoint.svelte';
+    import JobType from './JobType.svelte';
 
     let jobNameFilter;
     let statusFilter;
