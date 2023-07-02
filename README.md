@@ -11,13 +11,17 @@ Currently, Heimdall only supports Flink jobs deployed with [Flink Kubernetes Ope
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/sap1ens/heimdall/main/tools/k8s-operator/service-account.yaml
-kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.2.0 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
+kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.3.0 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
 kubectl port-forward heimdall 8080:8080
 open http://localhost:8080
 ```
 
-This creates a pod and uses port-forwarding for accessing the dashboard. You probably want to convert it to a deployment 
-with a service using your standard Kubernetes configuration tooling. 
+## Installation
+
+Heimdall is available as a Docker container [here](https://github.com/sap1ens/heimdall/pkgs/container/heimdall). Since only 
+Flink Kubernetes Operator as available at the moment you'd typically deploy Heimdall as a pod or deployment in the same cluster.
+
+Heimdall uses port 8080 and exposes liveness and readiness endpoints at `/q/health/live` and `/q/health/ready`.
 
 ## Job Locators
 
