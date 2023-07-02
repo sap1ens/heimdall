@@ -12,6 +12,8 @@
     let jobNameFilter;
     let statusFilter;
 
+    let activeSorting;
+
     let displayMode = 'tabular';
 
     $: visibleFlinkJobs = $flinkJobs.data.filter(job => {
@@ -22,6 +24,20 @@
             return job.status === statusFilter;
         }
         return true;
+    }).sort((a, b) => {
+        if (!activeSorting || activeSorting === 'jobNameAsc') {
+            return sortGeneric(displayName(a), displayName(b));
+        } else if (activeSorting === 'jobNameDesc') {
+            return sortGeneric(displayName(b), displayName(a));
+        } else if (activeSorting === 'startTimeAsc') {
+            return sortNumbers(a.startTime, b.startTime);
+        } else if (activeSorting === 'startTimeDesc') {
+            return sortNumbers(b.startTime, a.startTime);
+        } else if (activeSorting === 'resourcesAsc') {
+            return sortNumbers(totalResources(a), totalResources(b));
+        } else if (activeSorting === 'resourcesDesc') {
+            return sortNumbers(totalResources(b), totalResources(a));
+        }
     });
 
     $: jobStatusList = [...new Set($flinkJobs.data.map(job => job.status))];
@@ -57,6 +73,22 @@
             name = name.replace(/.?\$metadata\.[^ ]*/g, '');
         }
         return name;
+    }
+
+    function sortGeneric(a, b) {
+        if (a < b) return -1;
+        if (a > b) return 1;
+        return 0;
+    }
+
+    function sortNumbers(a, b) {
+        if (a == null) return 1;
+        if (b == null) return -1;
+        return b - a;
+    }
+
+    function totalResources(flinkJob) {
+        return flinkJob.resources.jm.replicas + flinkJob.resources.tm.replicas;
     }
 </script>
 
@@ -95,10 +127,64 @@
             <table class="table-auto w-full border">
                 <thead class="text-lg">
                 <tr class="bg-slate-50">
-                    <th class="border border-slate-300 p-2 w-4/12">Flink Job</th>
+                    <th class="border border-slate-300 p-2 w-4/12">
+                        <div class="flex items-center justify-center">
+                            Flink Job
+                            <div class="flex flex-col ml-2">
+                                <div
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1"
+                                        on:click={() => activeSorting = 'jobNameAsc'}
+                                        class:border-b-black={activeSorting !== 'jobNameAsc'}
+                                        class:border-b-[#e6516f]={activeSorting === 'jobNameAsc'}
+                                ></div>
+                                <div
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer"
+                                        on:click={() => activeSorting = 'jobNameDesc'}
+                                        class:border-t-black={activeSorting !== 'jobNameDesc'}
+                                        class:border-t-[#e6516f]={activeSorting === 'jobNameDesc'}
+                                ></div>
+                            </div>
+                        </div>
+                    </th>
                     <th class="border border-slate-300 p-2 w-1/12">Status</th>
-                    <th class="border border-slate-300 p-2 w-3/12">Resources</th>
-                    <th class="border border-slate-300 p-2 w-2/12">Started At</th>
+                    <th class="border border-slate-300 p-2 w-3/12">
+                        <div class="flex items-center justify-center">
+                            Resources
+                            <div class="flex flex-col ml-2">
+                                <div
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] border-b-black hover:cursor-pointer mb-1"
+                                        on:click={() => activeSorting = 'resourcesAsc'}
+                                        class:border-b-black={activeSorting !== 'resourcesAsc'}
+                                        class:border-b-[#e6516f]={activeSorting === 'resourcesAsc'}
+                                ></div>
+                                <div
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] border-t-black hover:cursor-pointer"
+                                        on:click={() => activeSorting = 'resourcesDesc'}
+                                        class:border-t-black={activeSorting !== 'resourcesDesc'}
+                                        class:border-t-[#e6516f]={activeSorting === 'resourcesDesc'}
+                                ></div>
+                            </div>
+                        </div>
+                    </th>
+                    <th class="border border-slate-300 p-2 w-2/12">
+                        <div class="flex items-center justify-center">
+                            Started At
+                            <div class="flex flex-col ml-2">
+                                <div
+                                     class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] border-b-black hover:cursor-pointer mb-1"
+                                     on:click={() => activeSorting = 'startTimeAsc'}
+                                     class:border-b-black={activeSorting !== 'startTimeAsc'}
+                                     class:border-b-[#e6516f]={activeSorting === 'startTimeAsc'}
+                                ></div>
+                                <div
+                                     class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] border-t-black hover:cursor-pointer"
+                                     on:click={() => activeSorting = 'startTimeDesc'}
+                                     class:border-t-black={activeSorting !== 'startTimeDesc'}
+                                     class:border-t-[#e6516f]={activeSorting === 'startTimeDesc'}
+                                ></div>
+                            </div>
+                        </div>
+                    </th>
                     <th class="border border-slate-300 p-2 w-2/12">Endpoints</th>
                 </tr>
                 </thead>
