@@ -17,13 +17,15 @@
     let displayMode = 'tabular';
 
     $: visibleFlinkJobs = $flinkJobs.data.filter(job => {
+        let nameMatch = true;
+        let statusMatch = true;
         if (jobNameFilter) {
-            return displayName(job).includes(jobNameFilter);
+            nameMatch = displayName(job).includes(jobNameFilter);
         }
         if (statusFilter) {
-            return job.status === statusFilter;
+            statusMatch = job.status === statusFilter;
         }
-        return true;
+        return nameMatch && statusMatch;
     }).sort((a, b) => {
         if (!activeSorting || activeSorting === 'jobNameAsc') {
             return sortGeneric(displayName(a), displayName(b));
