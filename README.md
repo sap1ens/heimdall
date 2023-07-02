@@ -34,20 +34,20 @@ A service account with read-only access to `flinkdeployment` CR is required. See
 
 ### Common
 
-| Config option                             | Environment variable                      | Default                           | Description                                                                                                                    |
-|-------------------------------------------|-------------------------------------------|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
-| heimdall.patterns.display-name            | HEIMDALL_PATTERNS_DISPLAY_NAME            | $jobName                          | Pattern for showing Flink job name. Metadata fields (e.g. Kubernetes labels) can be accessed via `$metadata.labelName` syntax. |
-| heimdall.endpoint-path-patterns.flink-ui  | HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_UI  | http://localhost/$jobName/ui      | Pattern for the Flink UI endpoint. `$jobName` will be substituted.                                                             |
-| heimdall.endpoint-path-patterns.flink-api | HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_API | http://localhost/$jobName/api     | Pattern for the Flink API endpoint. `$jobName` will be substituted.                                                            |
-| heimdall.endpoint-path-patterns.metrics   | HEIMDALL_ENDPOINT_PATH_PATTERNS_METRICS   | http://localhost/$jobName/metrics | Pattern for the Metrics endpoint. `$jobName` will be substituted.                                                              |
-| heimdall.endpoint-path-patterns.logs      | HEIMDALL_ENDPOINT_PATH_PATTERNS_LOGS      | http://localhost/$jobName/logs    | Pattern for the Logs endpoint. `$jobName` will be substituted.                                                                 |
+| Environment variable                      | Default                           | Description                                                                                                                    |
+|-------------------------------------------|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| HEIMDALL_PATTERNS_DISPLAY_NAME            | $jobName                          | Pattern for showing Flink job name. Metadata fields (e.g. Kubernetes labels) can be accessed via `$metadata.labelName` syntax. |
+| HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_UI  | http://localhost/$jobName/ui      | Pattern for the Flink UI endpoint. `$jobName` will be substituted.                                                             |
+| HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_API | http://localhost/$jobName/api     | Pattern for the Flink API endpoint. `$jobName` will be substituted.                                                            |
+| HEIMDALL_ENDPOINT_PATH_PATTERNS_METRICS   | http://localhost/$jobName/metrics | Pattern for the Metrics endpoint. `$jobName` will be substituted.                                                              |
+| HEIMDALL_ENDPOINT_PATH_PATTERNS_LOGS      | http://localhost/$jobName/logs    | Pattern for the Logs endpoint. `$jobName` will be substituted.                                                                 |
 
 ### K8sOperatorFlinkJobLocator
 
-| Config option                                       | Environment variable                                | Default | Description                  |
-|-----------------------------------------------------|-----------------------------------------------------|---------|------------------------------|
-| heimdall.joblocator.k8s-operator.enabled            | HEIMDALL_JOBLOCATOR_K8S_OPERATOR_ENABLED            | true    | Is this locator enabled?     |
-| heimdall.joblocator.k8s-operator.namespace-to-watch | HEIMDALL_JOBLOCATOR_K8S_OPERATOR_NAMESPACE_TO_WATCH | default | Kubernetes namespace to use. |
+| Environment variable                                | Default | Description                  |
+|-----------------------------------------------------|---------|------------------------------|
+| HEIMDALL_JOBLOCATOR_K8S_OPERATOR_ENABLED            | true    | Is this locator enabled?     |
+| HEIMDALL_JOBLOCATOR_K8S_OPERATOR_NAMESPACE_TO_WATCH | default | Kubernetes namespace to use. |
 
 ## Development
 
