@@ -53,6 +53,7 @@ jobs:
 
       - name: Git tag
         uses: rickstaa/action-create-tag@v1
+        if: "!contains(env.heimdall_version, 'SNAPSHOT')"
         with:
           tag: "${{ env.heimdall_version }}"
           tag_exists_error: false
