@@ -40,6 +40,7 @@ A service account with read-only access to `flinkdeployment` CR is required. See
 
 | Environment variable                      | Default                           | Description                                                                                                                    |
 |-------------------------------------------|-----------------------------------|--------------------------------------------------------------------------------------------------------------------------------|
+| QUARKUS_HTTP_CORS_ORIGINS                 | http://localhost:5173             | Comma separated list of valid origins allowed for CORS. Change to `http://localhost:8001` when using `kubectl proxy`.          |
 | HEIMDALL_PATTERNS_DISPLAY_NAME            | $jobName                          | Pattern for showing Flink job name. Metadata fields (e.g. Kubernetes labels) can be accessed via `$metadata.labelName` syntax. |
 | HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_UI  | http://localhost/$jobName/ui      | Pattern for the Flink UI endpoint. `$jobName` will be substituted.                                                             |
 | HEIMDALL_ENDPOINT_PATH_PATTERNS_FLINK_API | http://localhost/$jobName/api     | Pattern for the Flink API endpoint. `$jobName` will be substituted.                                                            |
