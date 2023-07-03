@@ -71,7 +71,9 @@
             for (const [key, value] of Object.entries(flinkJob.metadata)) {
                 name = name.replace(`$metadata.${key}`, value);
             }
-        } else {
+        }
+        // clean up metadata that was not found
+        if (name.includes('$metadata.')) {
             name = name.replace(/.?\$metadata\.[^ ]*/g, '');
         }
         return name;
