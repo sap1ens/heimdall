@@ -11,7 +11,7 @@ Currently, Heimdall only supports Flink jobs deployed with [Flink Kubernetes Ope
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/sap1ens/heimdall/main/tools/k8s-operator/service-account.yaml
-kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.3.0 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
+kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.3.1 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
 kubectl port-forward heimdall 8080:8080
 open http://localhost:8080
 ```
