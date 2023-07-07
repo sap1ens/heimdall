@@ -2,12 +2,13 @@
     import axios from 'axios';
     import { format } from 'date-fns'
     import Fa from 'svelte-fa'
-    import { faImagePortrait, faChartColumn, faTable, faIdCard, faClock, faInfo } from '@fortawesome/free-solid-svg-icons'
+    import { faImagePortrait, faChartColumn, faTable, faIdCard, faClock, faInfo, faGear } from '@fortawesome/free-solid-svg-icons'
 
     import { appConfig } from './stores/appConfig.js';
     import { flinkJobs } from './stores/flinkJobs.js';
     import ExternalEndpoint from './ExternalEndpoint.svelte';
     import JobType from './JobType.svelte';
+    import Modal from './Modal.svelte';
 
     let jobNameFilter;
     let statusFilter;
@@ -15,6 +16,9 @@
     let activeSorting;
 
     let displayMode = 'tabular';
+    let showSettingsModal = false;
+
+    let refreshInterval = '30'; // FIXME
 
     $: visibleFlinkJobs = $flinkJobs.data.filter(job => {
         let nameMatch = true;
@@ -45,6 +49,8 @@
     $: jobStatusList = [...new Set($flinkJobs.data.map(job => job.status))];
 
     $: displayNamePattern = $appConfig?.patterns?.['display-name'];
+
+    $: refreshInterval && flinkJobs.setInterval(refreshInterval);
 
     function statusColor(status) {
         switch(status) {
@@ -96,6 +102,16 @@
     }
 </script>
 
+<Modal bind:showModal={showSettingsModal}>
+    Refresh interval:
+    <select bind:value={refreshInterval} class="ml-2">
+        <option value="-1">No refresh</option>
+        <option value="10">10 sec</option>
+        <option value="30">30 sec</option>
+        <option value="60">60 sec</option>
+        <option value="300">5 min</option>
+    </select>
+</Modal>
 <div class="flex items-center justify-between py-6 text-base">
     <div>
         Filter by name:
@@ -111,15 +127,18 @@
     </div>
     <div>
         {#if displayMode === 'card'}
-        <a href="#" title="Table view" on:click={() => displayMode = 'tabular'}>
+        <span title="Table view" on:click={() => displayMode = 'tabular'} class="inline-block">
             <Fa fw icon={faTable} size="2x" class="text-gray-500 hover:cursor-pointer" />
-        </a>
+        </span>
         {/if}
         {#if displayMode === 'tabular'}
-        <a href="#" title="Card view" on:click={() => displayMode = 'card'}>
+        <span title="Card view" on:click={() => displayMode = 'card'} class="inline-block">
             <Fa fw icon={faIdCard} size="2x" class="text-gray-500 hover:cursor-pointer" />
-        </a>
+        </span>
         {/if}
+        <span title="Settings" on:click={() => showSettingsModal = true} class="inline-block">
+            <Fa fw icon={faGear} size="2x" class="text-gray-500 hover:cursor-pointer ml-1" />
+        </span>
     </div>
 </div>
 

@@ -1,15 +1,13 @@
 import { writable } from 'svelte/store'
 import axios from 'axios';
 
-const REFRESH_INTERVAL_MS = 10000;
-
 let allFlinkJobs = [];
 
 function createDataStore() {
     let intervalId;
     const {set, subscribe } = writable({data: [], loaded: false}, () => {
         return () => {
-            clearInterval(intervalId)
+            clearInterval(intervalId);
         }
     });
 
@@ -36,10 +34,16 @@ function createDataStore() {
     }
 
     loadJobs();
-    intervalId = setInterval(loadJobs, REFRESH_INTERVAL_MS);
 
     return {
-        subscribe
+        subscribe,
+        setInterval: function(intervalSec) {
+            intervalSec = parseInt(intervalSec);
+            clearInterval(intervalId);
+            if (intervalSec > 0) {
+                intervalId = setInterval(loadJobs, intervalSec * 1000);
+            }
+        }
     }
 }
 
