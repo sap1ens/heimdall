@@ -103,7 +103,7 @@
 <Modal bind:showModal={showSettingsModal}>
     <div>
         Refresh interval:
-        <select bind:value={$settings.refreshInterval} class="ml-2">
+        <select name="refreshInterval" bind:value={$settings.refreshInterval} class="ml-2">
             <option value="-1">No refresh</option>
             <option value="10">10 sec</option>
             <option value="30">30 sec</option>
@@ -116,17 +116,17 @@
         <div class="mt-1">
             <div>
                 <label>
-                    <input type="checkbox" bind:checked={$settings.showJobParallelism} /> Parallelism
+                    <input name="showJobParallelism" type="checkbox" bind:checked={$settings.showJobParallelism} /> Parallelism
                 </label>
             </div>
             <div>
                 <label>
-                    <input type="checkbox" bind:checked={$settings.showJobFlinkVersion} /> Flink version
+                    <input name="showJobFlinkVersion" type="checkbox" bind:checked={$settings.showJobFlinkVersion} /> Flink version
                 </label>
             </div>
             <div>
                 <label>
-                    <input type="checkbox" bind:checked={$settings.showJobImage} /> Image
+                    <input name="showJobImage" type="checkbox" bind:checked={$settings.showJobImage} /> Image
                 </label>
             </div>
         </div>
@@ -135,10 +135,10 @@
 <div class="flex items-center justify-between py-6 text-base">
     <div>
         Filter by name:
-        <input type="text" placeholder="Flink Job name" bind:value={jobNameFilter}>
+        <input name="jobNameFilter" type="text" placeholder="Flink Job name" bind:value={jobNameFilter}>
         &nbsp;
         Filter by status
-        <select bind:value={statusFilter}>
+        <select name="statusFilter" bind:value={statusFilter}>
             <option value="">Show all</option>
             {#each jobStatusList as status}
                 <option value="{status}">{status}</option>
