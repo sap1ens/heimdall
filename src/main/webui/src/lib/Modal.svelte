@@ -13,7 +13,7 @@
         bind:this={dialog}
         on:close={() => (showModal = false)}
         on:click|self={() => dialog.close()}
-        class="w-4/12 min-h-[25%] outline-none"
+        class="w-[500px] h-[200px] p-[25px] outline-none"
 >
     <div on:click|stopPropagation>
         <slot />

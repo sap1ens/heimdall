@@ -16,7 +16,6 @@
 
     let activeSorting;
 
-    let displayMode = 'tabular';
     let showSettingsModal = false;
 
     $: visibleFlinkJobs = $flinkJobs.data.filter(job => {
@@ -102,14 +101,36 @@
 </script>
 
 <Modal bind:showModal={showSettingsModal}>
-    Refresh interval:
-    <select bind:value={$settings.refreshInterval} class="ml-2">
-        <option value="-1">No refresh</option>
-        <option value="10">10 sec</option>
-        <option value="30">30 sec</option>
-        <option value="60">60 sec</option>
-        <option value="300">5 min</option>
-    </select>
+    <div>
+        Refresh interval:
+        <select bind:value={$settings.refreshInterval} class="ml-2">
+            <option value="-1">No refresh</option>
+            <option value="10">10 sec</option>
+            <option value="30">30 sec</option>
+            <option value="60">60 sec</option>
+            <option value="300">5 min</option>
+        </select>
+    </div>
+    <div class="mt-2.5">
+        Display details:
+        <div class="mt-1">
+            <div>
+                <label>
+                    <input type="checkbox" bind:checked={$settings.showJobParallelism} /> Parallelism
+                </label>
+            </div>
+            <div>
+                <label>
+                    <input type="checkbox" bind:checked={$settings.showJobFlinkVersion} /> Flink version
+                </label>
+            </div>
+            <div>
+                <label>
+                    <input type="checkbox" bind:checked={$settings.showJobImage} /> Image
+                </label>
+            </div>
+        </div>
+    </div>
 </Modal>
 <div class="flex items-center justify-between py-6 text-base">
     <div>
@@ -125,13 +146,13 @@
         </select>
     </div>
     <div>
-        {#if displayMode === 'card'}
-        <span title="Table view" on:click={() => displayMode = 'tabular'} class="inline-block">
+        {#if $settings.displayMode === 'card'}
+        <span title="Table view" on:click={() => $settings.displayMode = 'tabular'} class="inline-block">
             <Fa fw icon={faTable} size="2x" class="text-gray-500 hover:cursor-pointer" />
         </span>
         {/if}
-        {#if displayMode === 'tabular'}
-        <span title="Card view" on:click={() => displayMode = 'card'} class="inline-block">
+        {#if $settings.displayMode === 'tabular'}
+        <span title="Card view" on:click={() => $settings.displayMode = 'card'} class="inline-block">
             <Fa fw icon={faIdCard} size="2x" class="text-gray-500 hover:cursor-pointer" />
         </span>
         {/if}
@@ -145,7 +166,7 @@
     <p class="text-xl text-center text-red-500 font-bold">Couldn't load data: {$flinkJobs.error}</p>
 {:else}
     {#if visibleFlinkJobs.length > 0 || jobNameFilter || statusFilter}
-        {#if displayMode === 'tabular'}
+        {#if $settings.displayMode === 'tabular'}
             <table class="table-auto w-full border">
                 <thead class="text-lg">
                 <tr class="bg-slate-50">
@@ -217,17 +238,21 @@
                             <div class="flex items-start justify-between text-lg">
                                 <div>
                                     <p>{displayName(flinkJob)}</p>
+                                    {#if $settings.showJobParallelism}
                                     <p class="text-sm text-gray-500">
                                         <Fa fw icon={faChartColumn} /> Parallelism: {flinkJob.parallelism || 'N/A' }
                                     </p>
-                                    {#if flinkJob.flinkVersion}
+                                    {/if}
+                                    {#if $settings.showJobFlinkVersion && flinkJob.flinkVersion}
                                     <p class="text-sm text-gray-500">
                                         <Fa fw icon={faInfo} /> Flink version: {flinkJob.flinkVersion}
                                     </p>
                                     {/if}
+                                    {#if $settings.showJobImage}
                                     <p class="text-sm text-gray-500">
                                         <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
                                     </p>
+                                    {/if}
                                 </div>
                                 <div>
                                     <JobType type={flinkJob.type} />
@@ -276,20 +301,24 @@
                         {flinkJob.status}
                     </div>
                     <div class="pb-4">
+                        {#if $settings.showJobParallelism}
                         <p class="text-sm text-gray-500">
                             <Fa fw icon={faChartColumn} /> Parallelism: {flinkJob.parallelism || 'N/A' }
                         </p>
+                        {/if}
                         <p class="text-sm text-gray-500">
                             <Fa fw icon={faClock} /> Started at: {formatStartTime(flinkJob.startTime)}
                         </p>
-                        {#if flinkJob.flinkVersion}
+                        {#if $settings.showJobFlinkVersion && flinkJob.flinkVersion}
                             <p class="text-sm text-gray-500">
                                 <Fa fw icon={faInfo} /> Flink version: {flinkJob.flinkVersion}
                             </p>
                         {/if}
+                        {#if $settings.showJobImage}
                         <p class="text-sm text-gray-500">
                             <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
                         </p>
+                        {/if}
                     </div>
                     <p>
                         <ExternalEndpoint type="flink-ui" title="Flink UI" jobName="{flinkJob.name}" />
