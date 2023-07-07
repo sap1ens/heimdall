@@ -56,9 +56,10 @@ A service account with read-only access to `flinkdeployment` CR is required. See
 
 ## Development
 
-This project uses Quarkus, the Supersonic Subatomic Java Framework.
+This project uses:
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io.
+- Java 17 and [Quarkus](https://quarkus.io) on the back-end.
+- JavaScript and [Svelte](https://svelte.dev) on the front-end.
 
 ### Running the application in dev mode
 
@@ -89,6 +90,6 @@ If you want to build an _über-jar_, execute the following command:
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
 
-### Sponsors
+## Sponsors
 
 This project is sponsored by [Goldsky](https://goldsky.com) ❤️.
