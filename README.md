@@ -1,9 +1,9 @@
 # Heimdall
 
-Heimdall is a dashboard for managing Flink jobs and deployments. Built-in Flink UI is extremely useful when dealing with
-a single job, but what if you have 10, 20 or 100? Heimdall helps to keep track of all your Flink jobs, search, filter, sort and navigate them.
+Heimdall is a dashboard for operating Flink jobs and deployments. Built-in Flink UI is extremely useful when dealing with
+a single job, but what if you have 10, 20 or 100 jobs? Heimdall helps to keep track of all your Flink jobs by searching, filtering, sorting and navigating them.
 
-Currently, Heimdall only supports Flink jobs deployed with [Flink Kubernetes Operator](https://ci.apache.org/projects/flink/flink-kubernetes-operator-docs-stable/).
+Note: currently, Heimdall only supports Flink jobs deployed with [Flink Kubernetes Operator](https://ci.apache.org/projects/flink/flink-kubernetes-operator-docs-stable/).
 
 ![](docs/assets/demo.gif)
 
@@ -11,7 +11,7 @@ Currently, Heimdall only supports Flink jobs deployed with [Flink Kubernetes Ope
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/sap1ens/heimdall/main/tools/k8s-operator/service-account.yaml
-kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.3.1 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
+kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.4.0 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
 kubectl port-forward heimdall 8080:8080
 open http://localhost:8080
 ```
@@ -58,19 +58,21 @@ A service account with read-only access to `flinkdeployment` CR is required. See
 
 This project uses Quarkus, the Supersonic Subatomic Java Framework.
 
-If you want to learn more about Quarkus, please visit its website: https://quarkus.io/ .
+If you want to learn more about Quarkus, please visit its website: https://quarkus.io.
 
 ### Running the application in dev mode
 
 You can run your application in dev mode that enables live coding using:
-```shell script
+
+```bash
 ./gradlew quarkusDev
 ```
 
 ### Packaging and running the application
 
 The application can be packaged using:
-```shell script
+
+```bash
 ./gradlew build
 ```
 
@@ -81,12 +83,12 @@ The application is now runnable using `java -jar build/quarkus-app/quarkus-run.j
 
 If you want to build an _über-jar_, execute the following command:
 
-```shell script
+```bash
 ./gradlew build -Dquarkus.package.type=uber-jar
 ```
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
 
----
+### Sponsors
 
-The project is sponsored by [Goldsky](https://goldsky.com) ❤️.
+This project is sponsored by [Goldsky](https://goldsky.com) ❤️.
