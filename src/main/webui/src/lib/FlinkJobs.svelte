@@ -5,6 +5,7 @@
     import { faImagePortrait, faChartColumn, faTable, faIdCard, faClock, faInfo, faGear } from '@fortawesome/free-solid-svg-icons'
 
     import { appConfig } from './stores/appConfig.js';
+    import { settings } from './stores/settings.js';
     import { flinkJobs } from './stores/flinkJobs.js';
     import ExternalEndpoint from './ExternalEndpoint.svelte';
     import JobType from './JobType.svelte';
@@ -17,8 +18,6 @@
 
     let displayMode = 'tabular';
     let showSettingsModal = false;
-
-    let refreshInterval = '30'; // FIXME
 
     $: visibleFlinkJobs = $flinkJobs.data.filter(job => {
         let nameMatch = true;
@@ -50,7 +49,7 @@
 
     $: displayNamePattern = $appConfig?.patterns?.['display-name'];
 
-    $: refreshInterval && flinkJobs.setInterval(refreshInterval);
+    $: $settings.refreshInterval && flinkJobs.setInterval($settings.refreshInterval);
 
     function statusColor(status) {
         switch(status) {
@@ -104,7 +103,7 @@
 
 <Modal bind:showModal={showSettingsModal}>
     Refresh interval:
-    <select bind:value={refreshInterval} class="ml-2">
+    <select bind:value={$settings.refreshInterval} class="ml-2">
         <option value="-1">No refresh</option>
         <option value="10">10 sec</option>
         <option value="30">30 sec</option>
