@@ -1,15 +1,10 @@
 package com.sap1ens.heimdall.service;
 
 import com.sap1ens.heimdall.AppConfig;
+import com.sap1ens.heimdall.kubernetes.FlinkDeploymentClient;
 import com.sap1ens.heimdall.model.FlinkJob;
 import com.sap1ens.heimdall.model.FlinkJobResources;
 import com.sap1ens.heimdall.model.FlinkJobType;
-import io.fabric8.kubernetes.api.model.KubernetesResourceList;
-import io.fabric8.kubernetes.api.model.ListOptions;
-import io.fabric8.kubernetes.client.KubernetesClient;
-import io.fabric8.kubernetes.client.KubernetesClientBuilder;
-import io.fabric8.kubernetes.client.dsl.MixedOperation;
-import io.fabric8.kubernetes.client.dsl.Resource;
 import io.quarkus.arc.lookup.LookupIfProperty;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
@@ -30,20 +25,12 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
 
   @Inject AppConfig appConfig;
 
-  private KubernetesClient ks8Client = new KubernetesClientBuilder().build();
-
-  private MixedOperation<
-          FlinkDeployment, KubernetesResourceList<FlinkDeployment>, Resource<FlinkDeployment>>
-      flinkDeploymentK8Client = ks8Client.resources(FlinkDeployment.class);
+  @Inject FlinkDeploymentClient flinkDeploymentClient;
 
   @Override
   public List<FlinkJob> findAll() {
-    var listOptions = new ListOptions();
-    var flinkDeployments =
-        flinkDeploymentK8Client
-            .inNamespace(appConfig.joblocator().k8sOperator().namespaceToWatch())
-            .list(listOptions)
-            .getItems();
+    var namespace = appConfig.joblocator().k8sOperator().namespaceToWatch();
+    var flinkDeployments = flinkDeploymentClient.find(namespace);
     return flinkDeployments.stream().map(this::toFlinkJob).collect(Collectors.toList());
   }
 
