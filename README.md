@@ -3,6 +3,8 @@
 Heimdall is a dashboard for operating Flink jobs and deployments. Built-in Flink UI is extremely useful when dealing with
 a single job, but what if you have 10, 20 or 100 jobs? Heimdall helps to keep track of all your Flink jobs by searching, filtering, sorting and navigating them.
 
+Read more in my blog: [Heimdall: Making Operating Flink Deployments a Bit Easier](https://sap1ens.com/blog/2023/07/09/heimdall-making-operating-flink-deployments-a-bit-easier/).
+
 Note: currently, Heimdall only supports Flink jobs deployed with [Flink Kubernetes Operator](https://ci.apache.org/projects/flink/flink-kubernetes-operator-docs-stable/).
 
 ![](docs/assets/demo.gif)
