@@ -13,7 +13,7 @@ Note: currently, Heimdall only supports Flink jobs deployed with [Flink Kubernet
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/sap1ens/heimdall/main/tools/k8s-operator/service-account.yaml
-kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.4.0 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
+kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.5.0 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
 kubectl port-forward heimdall 8080:8080
 open http://localhost:8080
 ```
@@ -35,6 +35,10 @@ Can be enabled with `heimdall.joblocator.k8s-operator.enabled` config. Currently
 `flinkdeployment` custom resource (CR) created by the Flink Kubernetes Operator.
 
 A service account with read-only access to `flinkdeployment` CR is required. See [tools/k8s-operator/service-account.yaml](tools/k8s-operator/service-account.yaml) for an example.
+
+## Cache
+
+By default, all data received from a locator is cached in memory for 5 seconds. This can be disabled or configured to use a different interval (see [this page](https://quarkus.io/guides/cache#configuring-the-underlying-caching-provider)).
 
 ## Configuration
 
