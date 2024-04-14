@@ -6,17 +6,30 @@ import static org.hamcrest.CoreMatchers.is;
 import com.sap1ens.heimdall.model.FlinkJob;
 import com.sap1ens.heimdall.model.FlinkJobType;
 import com.sap1ens.heimdall.service.FlinkJobLocator;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.junit.QuarkusTestProfile;
+import io.quarkus.test.junit.TestProfile;
+import io.quarkus.test.junit.mockito.MockitoConfig;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 
 @QuarkusTest
+@TestProfile(FlinkJobResourceTest.NoCacheTestProfile.class)
 public class FlinkJobResourceTest {
 
-  @InjectMock(convertScopes = true)
+  public static class NoCacheTestProfile implements QuarkusTestProfile {
+    @Override
+    public Map<String, String> getConfigOverrides() {
+      return Map.of("quarkus.cache.enabled", "false");
+    }
+  }
+
+  @InjectMock
+  @MockitoConfig(convertScopes = true)
   FlinkJobLocator flinkJobLocator;
 
   @Test

@@ -7,9 +7,10 @@ import com.sap1ens.heimdall.AppConfig;
 import com.sap1ens.heimdall.kubernetes.FlinkDeploymentClient;
 import com.sap1ens.heimdall.model.FlinkJobType;
 import io.fabric8.kubernetes.api.model.ObjectMetaBuilder;
+import io.quarkus.test.InjectMock;
 import io.quarkus.test.Mock;
 import io.quarkus.test.junit.QuarkusTest;
-import io.quarkus.test.junit.mockito.InjectMock;
+import io.quarkus.test.junit.mockito.MockitoConfig;
 import jakarta.enterprise.context.ApplicationScoped;
 import jakarta.inject.Inject;
 import java.util.ArrayList;
@@ -32,10 +33,12 @@ import org.mockito.Mockito;
 @QuarkusTest
 public class K8sOperatorFlinkJobLocatorTest {
 
-  @InjectMock(convertScopes = true)
+  @InjectMock
+  @MockitoConfig(convertScopes = true)
   FlinkDeploymentClient flinkDeploymentClient;
 
-  @InjectMock(returnsDeepMocks = true)
+  @InjectMock
+  @MockitoConfig(returnsDeepMocks = true)
   AppConfig appConfig;
 
   @Inject K8sOperatorFlinkJobLocator flinkJobLocator;
