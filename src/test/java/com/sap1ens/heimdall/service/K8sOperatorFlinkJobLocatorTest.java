@@ -109,7 +109,7 @@ public class K8sOperatorFlinkJobLocatorTest {
     flinkDeployment.setSpec(spec);
     var status = new FlinkDeploymentStatus();
     var jobStatus = new JobStatus();
-    jobStatus.setState("RUNNING");
+    jobStatus.setState(org.apache.flink.api.common.JobStatus.RUNNING);
     status.setJobStatus(jobStatus);
     flinkDeployment.setStatus(status);
     return flinkDeployment;

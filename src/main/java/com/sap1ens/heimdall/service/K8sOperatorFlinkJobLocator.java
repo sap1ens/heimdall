@@ -50,6 +50,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
         flinkDeployment.getMetadata().getUid(),
         flinkDeployment.getMetadata().getName(),
         Optional.ofNullable(flinkDeployment.getStatus().getJobStatus().getState())
+            .map(Enum::toString)
             .orElse(UNKNOWN_STATUS),
         jobType,
         Optional.ofNullable(flinkDeployment.getStatus().getJobStatus().getStartTime())
