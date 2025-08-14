@@ -84,7 +84,7 @@ The application can be packaged using:
 ```
 
 It produces the `quarkus-run.jar` file in the `build/quarkus-app/` directory.
-Be aware that it’s not an _über-jar_ as the dependencies are copied into the `build/quarkus-app/lib/` directory.
+Be aware that it's not an _über-jar_ as the dependencies are copied into the `build/quarkus-app/lib/` directory.
 
 The application is now runnable using `java -jar build/quarkus-app/quarkus-run.jar`.
 
@@ -95,6 +95,28 @@ If you want to build an _über-jar_, execute the following command:
 ```
 
 The application, packaged as an _über-jar_, is now runnable using `java -jar build/*-runner.jar`.
+
+#### Docker Image Build
+
+Build local Docker image:
+```bash
+./gradlew imageBuild
+```
+
+Build and push multi-architecture image (AMD64/ARM64):
+```bash
+# Authenticate first
+echo $GITHUB_TOKEN | docker login ghcr.io -u your-username --password-stdin
+
+# Create buildx builder
+docker buildx create --use --name multiarch-builder
+
+# Build and push
+docker buildx build --platform linux/amd64,linux/arm64 \
+  -f src/main/docker/Dockerfile.jvm \
+  -t ghcr.io/next-govejero/heimdall:latest \
+  --push .
+```
 
 ## Sponsors
 
