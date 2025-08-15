@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.8.0
+
+- Upgraded flink-kubernetes-operator-api to 1.12.1, which adds support for the latest Flink versions.
+
 ## 0.7.0
 
 - Upgraded flink-kubernetes-operator-api to 1.10.0, which adds support for the latest Flink versions.
