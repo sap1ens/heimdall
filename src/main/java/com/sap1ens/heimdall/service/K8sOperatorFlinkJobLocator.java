@@ -49,6 +49,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
     return new FlinkJob(
         flinkDeployment.getMetadata().getUid(),
         flinkDeployment.getMetadata().getName(),
+        flinkDeployment.getMetadata().getNamespace(),
         Optional.ofNullable(flinkDeployment.getStatus().getJobStatus().getState())
             .map(Enum::toString)
             .orElse(UNKNOWN_STATUS),

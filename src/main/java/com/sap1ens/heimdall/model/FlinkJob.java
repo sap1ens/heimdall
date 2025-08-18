@@ -5,6 +5,7 @@ import java.util.Map;
 public record FlinkJob(
     String id,
     String name,
+    String namespace,
     String status,
     FlinkJobType type,
     Long startTime,
