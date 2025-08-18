@@ -20,7 +20,7 @@ dependencies {
     implementation 'io.quarkus:quarkus-container-image-docker'
     implementation 'io.quarkus:quarkus-cache'
 
-    implementation 'org.apache.flink:flink-kubernetes-operator-api:1.12.0'
+    implementation 'org.apache.flink:flink-kubernetes-operator-api:1.12.1'
 
     testImplementation 'io.quarkus:quarkus-junit5'
     testImplementation 'io.quarkus:quarkus-junit5-mockito'

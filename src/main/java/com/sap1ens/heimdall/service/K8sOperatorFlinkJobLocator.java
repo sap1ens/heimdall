@@ -29,8 +29,8 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
 
   @Override
   public List<FlinkJob> findAll() {
-    var namespace = appConfig.joblocator().k8sOperator().namespaceToWatch();
-    var flinkDeployments = flinkDeploymentClient.find(namespace);
+    var namespaces = appConfig.joblocator().k8sOperator().namespacesToWatch();
+    var flinkDeployments = flinkDeploymentClient.find(namespaces);
     return flinkDeployments.stream().map(this::toFlinkJob).collect(Collectors.toList());
   }
 

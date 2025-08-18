@@ -46,7 +46,10 @@ public class K8sOperatorFlinkJobLocatorTest {
   @Test
   public void testFindAllEmpty() {
     Mockito.when(appConfig.joblocator().k8sOperator().namespaceToWatch()).thenReturn("empty-one");
-    Mockito.when(flinkDeploymentClient.find("empty-one")).thenReturn(Collections.emptyList());
+    Mockito.when(appConfig.joblocator().k8sOperator().namespacesToWatch())
+        .thenReturn(List.of("empty-one"));
+    Mockito.when(flinkDeploymentClient.find(List.of("empty-one")))
+        .thenReturn(Collections.emptyList());
 
     assertTrue(flinkJobLocator.findAll().isEmpty());
   }
@@ -55,7 +58,9 @@ public class K8sOperatorFlinkJobLocatorTest {
   public void testFindAll() {
     var flinkDeployments = generateFlinkDeployments(2);
     Mockito.when(appConfig.joblocator().k8sOperator().namespaceToWatch()).thenReturn("default");
-    Mockito.when(flinkDeploymentClient.find("default")).thenReturn(flinkDeployments);
+    Mockito.when(appConfig.joblocator().k8sOperator().namespacesToWatch())
+        .thenReturn(List.of("default"));
+    Mockito.when(flinkDeploymentClient.find(List.of("default"))).thenReturn(flinkDeployments);
 
     var flinkJobs = flinkJobLocator.findAll();
     assertEquals(2, flinkJobs.size());
@@ -70,6 +75,20 @@ public class K8sOperatorFlinkJobLocatorTest {
     assertEquals("1.0", flinkJob.resources().get("tm").cpu());
     assertEquals("2048m", flinkJob.resources().get("tm").mem());
     assertEquals("test-flink-deployment", flinkJob.metadata().get("flink-app"));
+  }
+
+  @Test
+  public void testFindAllMultipleNamespaces() {
+    var flinkDeployments = generateFlinkDeployments(3);
+    Mockito.when(appConfig.joblocator().k8sOperator().namespaceToWatch())
+        .thenReturn("default,prod,staging");
+    Mockito.when(appConfig.joblocator().k8sOperator().namespacesToWatch())
+        .thenReturn(List.of("default", "prod", "staging"));
+    Mockito.when(flinkDeploymentClient.find(List.of("default", "prod", "staging")))
+        .thenReturn(flinkDeployments);
+
+    var flinkJobs = flinkJobLocator.findAll();
+    assertEquals(3, flinkJobs.size());
   }
 
   private List<FlinkDeployment> generateFlinkDeployments(int num) {

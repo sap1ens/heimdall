@@ -13,7 +13,7 @@ Note: currently, Heimdall only supports Flink jobs deployed with [Flink Kubernet
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/sap1ens/heimdall/main/tools/k8s-operator/service-account.yaml
-kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.7.0 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
+kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.9.0-SNAPSHOT --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
 kubectl port-forward heimdall 8080:8080
 open http://localhost:8080
 ```
@@ -58,7 +58,7 @@ By default, all data received from a locator is cached in memory for 5 seconds. 
 | Environment variable                                | Default | Description                  |
 |-----------------------------------------------------|---------|------------------------------|
 | HEIMDALL_JOBLOCATOR_K8S_OPERATOR_ENABLED            | true    | Is this locator enabled?     |
-| HEIMDALL_JOBLOCATOR_K8S_OPERATOR_NAMESPACE_TO_WATCH | default | Kubernetes namespace to use. |
+| HEIMDALL_JOBLOCATOR_K8S_OPERATOR_NAMESPACE_TO_WATCH | default | Kubernetes namespace(s) to watch. Supports single namespace or comma-separated list (e.g. "default,prod,staging"). |
 
 ## Development
 

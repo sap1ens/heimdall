@@ -7,6 +7,7 @@ import io.fabric8.kubernetes.client.KubernetesClientBuilder;
 import io.fabric8.kubernetes.client.dsl.MixedOperation;
 import io.fabric8.kubernetes.client.dsl.Resource;
 import jakarta.inject.Singleton;
+import java.util.ArrayList;
 import java.util.List;
 import org.apache.flink.kubernetes.operator.api.FlinkDeployment;
 
@@ -24,5 +25,17 @@ public class FlinkDeploymentClient {
 
   public List<FlinkDeployment> find(String namespace) {
     return find(namespace, new ListOptions());
+  }
+
+  public List<FlinkDeployment> find(List<String> namespaces, ListOptions listOptions) {
+    List<FlinkDeployment> allDeployments = new ArrayList<>();
+    for (String namespace : namespaces) {
+      allDeployments.addAll(find(namespace, listOptions));
+    }
+    return allDeployments;
+  }
+
+  public List<FlinkDeployment> find(List<String> namespaces) {
+    return find(namespaces, new ListOptions());
   }
 }
