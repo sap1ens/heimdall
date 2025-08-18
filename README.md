@@ -114,7 +114,7 @@ docker buildx create --use --name multiarch-builder
 # Build and push
 docker buildx build --platform linux/amd64,linux/arm64 \
   -f src/main/docker/Dockerfile.jvm \
-  -t ghcr.io/next-govejero/heimdall:latest \
+  -t ghcr.io/sap1ens/heimdall:latest \
   --push .
 ```
 
