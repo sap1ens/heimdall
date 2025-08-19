@@ -13,6 +13,7 @@
 
     let jobNameFilter;
     let statusFilter;
+    let namespaceFilter;
 
     let activeSorting;
 
@@ -21,13 +22,17 @@
     $: visibleFlinkJobs = $flinkJobs.data.filter(job => {
         let nameMatch = true;
         let statusMatch = true;
+        let namespaceMatch = true;
         if (jobNameFilter) {
             nameMatch = displayName(job).includes(jobNameFilter);
         }
         if (statusFilter) {
             statusMatch = job.status === statusFilter;
         }
-        return nameMatch && statusMatch;
+        if (namespaceFilter) {
+            namespaceMatch = job.namespace === namespaceFilter;
+        }
+        return nameMatch && statusMatch && namespaceMatch;
     }).sort((a, b) => {
         if (!activeSorting || activeSorting === 'jobNameAsc') {
             return sortGeneric(displayName(a), displayName(b));
@@ -41,10 +46,15 @@
             return sortNumbers(totalResources(a), totalResources(b));
         } else if (activeSorting === 'resourcesDesc') {
             return sortNumbers(totalResources(b), totalResources(a));
+        } else if (activeSorting === 'namespaceAsc') {
+            return sortGeneric(a.namespace, b.namespace);
+        } else if (activeSorting === 'namespaceDesc') {
+            return sortGeneric(b.namespace, a.namespace);
         }
     });
 
     $: jobStatusList = [...new Set($flinkJobs.data.map(job => job.status))];
+    $: jobNamespaceList = [...new Set($flinkJobs.data.map(job => job.namespace))].sort();
 
     $: displayNamePattern = $appConfig?.patterns?.['display-name'];
 
@@ -144,6 +154,14 @@
                 <option value="{status}">{status}</option>
             {/each}
         </select>
+        &nbsp;
+        Filter by namespace
+        <select name="namespaceFilter" bind:value={namespaceFilter}>
+            <option value="">Show all</option>
+            {#each jobNamespaceList as namespace}
+                <option value="{namespace}">{namespace}</option>
+            {/each}
+        </select>
     </div>
     <div>
         {#if $settings.displayMode === 'card'}
@@ -170,7 +188,7 @@
             <table class="table-auto w-full border">
                 <thead class="text-lg">
                 <tr class="bg-slate-50">
-                    <th class="border border-slate-300 p-2 w-4/12">
+                    <th class="border border-slate-300 p-2 w-3/12">
                         <div class="flex items-center justify-center">
                             Flink Job
                             <div class="flex flex-col ml-2">
@@ -185,6 +203,25 @@
                                         on:click={() => activeSorting = 'jobNameDesc'}
                                         class:border-t-black={activeSorting !== 'jobNameDesc'}
                                         class:border-t-[#e6516f]={activeSorting === 'jobNameDesc'}
+                                ></div>
+                            </div>
+                        </div>
+                    </th>
+                    <th class="border border-slate-300 p-2 w-1/12">
+                        <div class="flex items-center justify-center">
+                            Namespace
+                            <div class="flex flex-col ml-2">
+                                <div
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1"
+                                        on:click={() => activeSorting = 'namespaceAsc'}
+                                        class:border-b-black={activeSorting !== 'namespaceAsc'}
+                                        class:border-b-[#e6516f]={activeSorting === 'namespaceAsc'}
+                                ></div>
+                                <div
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer"
+                                        on:click={() => activeSorting = 'namespaceDesc'}
+                                        class:border-t-black={activeSorting !== 'namespaceDesc'}
+                                        class:border-t-[#e6516f]={activeSorting === 'namespaceDesc'}
                                 ></div>
                             </div>
                         </div>
@@ -260,6 +297,9 @@
                             </div>
                         </td>
                         <td class="border border-slate-300 p-2">
+                            <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-mono">{flinkJob.namespace}</span>
+                        </td>
+                        <td class="border border-slate-300 p-2">
                             <div class="flex items-center">
                                 <div class="mr-1.5 w-4 h-4 rounded-full bg-{statusColor(flinkJob.status)}-500"></div>
                                 {flinkJob.status}
@@ -293,7 +333,12 @@
             {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
                 <div class="border border-slate-300 p-2">
                     <div class="flex items-start justify-between pb-4 text-lg">
-                        <p>{displayName(flinkJob)}</p>
+                        <div>
+                            <p>{displayName(flinkJob)}</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-mono">{flinkJob.namespace}</span>
+                            </p>
+                        </div>
                         <JobType type={flinkJob.type} />
                     </div>
                     <div class="flex items-center pb-4">
