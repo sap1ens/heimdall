@@ -82,7 +82,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
 
   protected String getShortImage(FlinkDeployment flinkDeployment) {
     var image = flinkDeployment.getSpec().getImage();
-    return image.contains("/") ? flinkDeployment.getSpec().getImage().split("/")[1] : image;
+    return image.contains("/") ? image.substring(image.indexOf("/") + 1) : image;
   }
 
   protected int getParallelism(FlinkDeployment flinkDeployment) {
