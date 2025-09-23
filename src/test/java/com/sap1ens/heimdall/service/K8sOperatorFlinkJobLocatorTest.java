@@ -94,7 +94,7 @@ public class K8sOperatorFlinkJobLocatorTest {
   @Test
   public void testGetShortImage() {
     // Test ECR-style image URL
-    var ecrDeployment = generateFlinkDeploymentWithImage("230774633245.dkr.ecr.eu-west-1.amazonaws.com/servicing/team/test:0.1.4");
+    var ecrDeployment = generateFlinkDeploymentWithImage("000333555999.dkr.ecr.eu-west-1.amazonaws.com/servicing/team/test:0.1.4");
     assertEquals("servicing/team/test:0.1.4", flinkJobLocator.getShortImage(ecrDeployment));
 
     // Test Docker Hub style
