@@ -80,6 +80,11 @@
     }
 
     function displayName(flinkJob) {
+        // Fallback to just the job name if displayNamePattern is not loaded yet
+        if (!displayNamePattern) {
+            return flinkJob.name;
+        }
+
         let name = displayNamePattern.replace('$jobName', flinkJob.name);
         if (Object.keys(flinkJob.metadata).length > 0) {
             for (const [key, value] of Object.entries(flinkJob.metadata)) {

@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.10.0
+
+- Enhanced image display to show full paths after registry domain (e.g., ECR URLs).
+- Improved test coverage for image URL parsing functionality.
+
 ## 0.9.0
 
 - Added support for multiple namespaces.
@@ -19,7 +24,7 @@
 ## 0.5.0
 
 - Added application cache.
-- Upgraded Quarkus to 3.2.x. 
+- Upgraded Quarkus to 3.2.x.
 
 ## 0.4.0
 

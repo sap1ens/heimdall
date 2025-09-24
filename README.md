@@ -13,14 +13,14 @@ Note: currently, Heimdall only supports Flink jobs deployed with [Flink Kubernet
 
 ```bash
 kubectl apply -f https://raw.githubusercontent.com/sap1ens/heimdall/main/tools/k8s-operator/service-account.yaml
-kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.9.0 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
+kubectl run heimdall --image=ghcr.io/sap1ens/heimdall:0.10.0 --port=8080 --overrides='{ "spec": { "serviceAccount": "heimdall-service-account" }  }'
 kubectl port-forward heimdall 8080:8080
 open http://localhost:8080
 ```
 
 ## Installation
 
-Heimdall is available as a Docker container [here](https://github.com/sap1ens/heimdall/pkgs/container/heimdall). Since only 
+Heimdall is available as a Docker container [here](https://github.com/sap1ens/heimdall/pkgs/container/heimdall). Since only
 Flink Kubernetes Operator as available at the moment you'd typically deploy Heimdall as a pod or deployment in the same cluster.
 
 Heimdall uses port 8080 and exposes liveness and readiness endpoints at `/q/health/live` and `/q/health/ready`.
@@ -31,7 +31,7 @@ Job locator (implements `FlinkJobLocator` interface) is a mechanism for discover
 
 ### K8sOperatorFlinkJobLocator
 
-Can be enabled with `heimdall.joblocator.k8s-operator.enabled` config. Currently, enabled by default. It loads 
+Can be enabled with `heimdall.joblocator.k8s-operator.enabled` config. Currently, enabled by default. It loads
 `flinkdeployment` custom resource (CR) created by the Flink Kubernetes Operator.
 
 A service account with read-only access to `flinkdeployment` CR is required. See [tools/k8s-operator/service-account.yaml](tools/k8s-operator/service-account.yaml) for an example.

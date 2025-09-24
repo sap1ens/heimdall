@@ -91,6 +91,29 @@ public class K8sOperatorFlinkJobLocatorTest {
     assertEquals(3, flinkJobs.size());
   }
 
+  @Test
+  public void testGetShortImage() {
+    // Test ECR-style image URL
+    var ecrDeployment = generateFlinkDeploymentWithImage("000333555999.dkr.ecr.eu-west-1.amazonaws.com/servicing/team/test:0.1.4");
+    assertEquals("servicing/team/test:0.1.4", flinkJobLocator.getShortImage(ecrDeployment));
+
+    // Test Docker Hub style
+    var dockerHubDeployment = generateFlinkDeploymentWithImage("docker.io/flink:1.15");
+    assertEquals("flink:1.15", flinkJobLocator.getShortImage(dockerHubDeployment));
+
+    // Test simple registry
+    var simpleRegistryDeployment = generateFlinkDeploymentWithImage("registry.com/image:tag");
+    assertEquals("image:tag", flinkJobLocator.getShortImage(simpleRegistryDeployment));
+
+    // Test image without slash
+    var simpleImageDeployment = generateFlinkDeploymentWithImage("flink:latest");
+    assertEquals("flink:latest", flinkJobLocator.getShortImage(simpleImageDeployment));
+
+    // Test complex multi-level paths
+    var complexDeployment = generateFlinkDeploymentWithImage("gcr.io/project/namespace/app:v1");
+    assertEquals("project/namespace/app:v1", flinkJobLocator.getShortImage(complexDeployment));
+  }
+
   private List<FlinkDeployment> generateFlinkDeployments(int num) {
     var flinkDeployments = new ArrayList<FlinkDeployment>();
     for (int i = 0; i < num; i++) {
@@ -100,6 +123,10 @@ public class K8sOperatorFlinkJobLocatorTest {
   }
 
   private FlinkDeployment generateFlinkDeployment() {
+    return generateFlinkDeploymentWithImage("test-image");
+  }
+
+  private FlinkDeployment generateFlinkDeploymentWithImage(String image) {
     var flinkDeployment = new FlinkDeployment();
     flinkDeployment.setMetadata(
         new ObjectMetaBuilder()
@@ -111,7 +138,7 @@ public class K8sOperatorFlinkJobLocatorTest {
     var jobSpec = new JobSpec();
     jobSpec.setParallelism(4);
     var spec = new FlinkDeploymentSpec();
-    spec.setImage("test-image");
+    spec.setImage(image);
     spec.setFlinkVersion(FlinkVersion.v1_15);
     spec.setJob(jobSpec);
     var resource = new Resource();
