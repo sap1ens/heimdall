@@ -10,7 +10,7 @@
 <main class="min-h-screen">
   <div class="w-11/12 mx-auto mt-4 pb-4 flex flex-col grow">
     <div class="flex items-center justify-start mb-6">
-      <img src={heimdallLogo} alt="Heimdall Logo" width="100" height="100" />
+      <img src={heimdallLogo} alt="Heimdall Logo" width="100" height="100" class="rounded-full shadow-lg bg-white p-2" />
       <h1 class="text-3xl font-bold py-6 text-[#e6516f] ml-3">Heimdall</h1>
     </div>
     <FlinkJobs/>
