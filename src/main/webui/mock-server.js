@@ -73,28 +73,10 @@ const server = http.createServer((req, res) => {
     }
 });
 
-server.listen(PORT, () => {
-    console.log('\n🚀 Heimdall Mock Server is running!\n');
-    console.log(`   Local:   http://localhost:${PORT}`);
-    console.log(`   Jobs:    http://localhost:${PORT}/jobs`);
-    console.log(`   Config:  http://localhost:${PORT}/config`);
-    console.log(`   Health:  http://localhost:${PORT}/health\n`);
-    console.log('📝 Edit mock-data.json to change the data\n');
-    console.log('Press Ctrl+C to stop\n');
-});
-
-// Graceful shutdown
-process.on('SIGINT', () => {
-    console.log('\n\n👋 Shutting down mock server...');
-    server.close(() => {
-        console.log('✅ Server stopped');
-        process.exit(0);
-    });
-});
-
 // Handle file watch (optional - reload data when file changes)
+let watcher = null;
 if (fs.watch) {
-    fs.watch(MOCK_DATA_FILE, (eventType) => {
+    watcher = fs.watch(MOCK_DATA_FILE, (eventType) => {
         if (eventType === 'change') {
             try {
                 const data = fs.readFileSync(MOCK_DATA_FILE, 'utf8');
@@ -105,5 +87,39 @@ if (fs.watch) {
             }
         }
     });
-    console.log('👀 Watching mock-data.json for changes...\n');
 }
+
+server.listen(PORT, () => {
+    console.log('\n🚀 Heimdall Mock Server is running!\n');
+    console.log(`   Local:   http://localhost:${PORT}`);
+    console.log(`   Jobs:    http://localhost:${PORT}/jobs`);
+    console.log(`   Config:  http://localhost:${PORT}/config`);
+    console.log(`   Health:  http://localhost:${PORT}/health\n`);
+    console.log('📝 Edit mock-data.json to change the data\n');
+    console.log('Press Ctrl+C to stop\n');
+    if (watcher) {
+        console.log('👀 Watching mock-data.json for changes...\n');
+    }
+});
+
+// Graceful shutdown
+process.on('SIGINT', () => {
+    console.log('\n\n👋 Shutting down mock server...');
+
+    // Close file watcher first
+    if (watcher) {
+        watcher.close();
+    }
+
+    // Close server
+    server.close(() => {
+        console.log('✅ Server stopped');
+        process.exit(0);
+    });
+
+    // Force exit after 2 seconds if graceful shutdown fails
+    setTimeout(() => {
+        console.log('⚠️  Forcing shutdown...');
+        process.exit(1);
+    }, 2000);
+});
