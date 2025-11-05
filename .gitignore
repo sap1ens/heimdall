@@ -37,3 +37,16 @@ nb-configuration.xml
 
 # Plugin directory
 /.quarkus/cli/plugins/
+
+# Test coverage
+coverage/
+*.lcov
+.nyc_output/
+test-results/
+playwright-report/
+*.log
+
+# Frontend
+node_modules/
+dist/
+.vite/
