@@ -57,8 +57,18 @@
     $: jobNamespaceList = [...new Set($flinkJobs.data.map(job => job.namespace))].sort();
 
     $: displayNamePattern = $appConfig?.patterns?.['display-name'];
+    $: endpointTypes = $appConfig?.endpointPathPatterns ? Object.keys($appConfig.endpointPathPatterns) : [];
 
     $: $settings.refreshInterval && flinkJobs.setInterval($settings.refreshInterval);
+
+    function formatEndpointTitle(type) {
+        // Convert endpoint type to readable title
+        // e.g., "flink-ui" -> "Flink UI", "github-repo" -> "GitHub Repo"
+        return type
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
 
     function statusColor(status) {
         switch(status) {
@@ -367,14 +377,9 @@
                             <span class="text-gray-600 text-sm">{formatStartTime(flinkJob.startTime)}</span>
                         </td>
                         <td class="p-4">
-                            <p>
-                                <ExternalEndpoint type="flink-ui" title="Flink UI" jobName="{flinkJob.name}" />
-                                <ExternalEndpoint type="flink-api" title="Flink API" jobName="{flinkJob.name}" />
-                            </p>
-                            <p>
-                                <ExternalEndpoint type="metrics" title="Metrics" jobName="{flinkJob.name}" />
-                                <ExternalEndpoint type="logs" title="Logs" jobName="{flinkJob.name}" />
-                            </p>
+                            {#each endpointTypes as endpointType}
+                                <ExternalEndpoint type="{endpointType}" title="{formatEndpointTitle(endpointType)}" jobName="{flinkJob.name}" />
+                            {/each}
                         </td>
                     </tr>
                 {/each}
@@ -418,10 +423,9 @@
                         {/if}
                     </div>
                     <p>
-                        <ExternalEndpoint type="flink-ui" title="Flink UI" jobName="{flinkJob.name}" />
-                        <ExternalEndpoint type="flink-api" title="Flink API" jobName="{flinkJob.name}" />
-                        <ExternalEndpoint type="metrics" title="Metrics" jobName="{flinkJob.name}" />
-                        <ExternalEndpoint type="logs" title="Logs" jobName="{flinkJob.name}" />
+                        {#each endpointTypes as endpointType}
+                            <ExternalEndpoint type="{endpointType}" title="{formatEndpointTitle(endpointType)}" jobName="{flinkJob.name}" />
+                        {/each}
                     </p>
                 </div>
             {/each}

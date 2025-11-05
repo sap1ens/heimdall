@@ -102,6 +102,24 @@ quarkus.cache.caffeine.flink-jobs.expire-after-access=10S
 | HEIMDALL_ENDPOINT_PATH_PATTERNS_METRICS   | http://localhost/$jobName/metrics | Pattern for the Metrics endpoint. `$jobName` will be substituted. Set to an empty string to disable.                           |
 | HEIMDALL_ENDPOINT_PATH_PATTERNS_LOGS      | http://localhost/$jobName/logs    | Pattern for the Logs endpoint. `$jobName` will be substituted. Set to an empty string to disable.                              |
 
+#### Custom Endpoints
+
+You can add any custom external endpoints by adding new `HEIMDALL_ENDPOINT_PATH_PATTERNS_*` environment variables. The endpoint name (after the prefix) will be automatically formatted as a display title.
+
+**Examples:**
+```bash
+# GitHub repository links
+HEIMDALL_ENDPOINT_PATH_PATTERNS_GITHUB_REPO=https://github.com/org/$jobName
+
+# Grafana dashboards
+HEIMDALL_ENDPOINT_PATH_PATTERNS_GRAFANA=https://grafana.example.com/d/dashboard?var-job=$jobName
+
+# Datadog logs
+HEIMDALL_ENDPOINT_PATH_PATTERNS_DATADOG=https://app.datadoghq.com/logs?query=service:$jobName
+```
+
+**Display names:** Endpoint keys are automatically converted to readable titles (e.g., `github-repo` → "GitHub Repo", `grafana` → "Grafana")
+
 ### K8sOperatorFlinkJobLocator
 
 | Environment variable                                | Default | Description                  |
