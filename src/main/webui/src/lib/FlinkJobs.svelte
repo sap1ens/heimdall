@@ -422,7 +422,7 @@
                         <ExternalEndpoint type="flink-api" title="Flink API" jobName="{flinkJob.name}" />
                         <ExternalEndpoint type="metrics" title="Metrics" jobName="{flinkJob.name}" />
                         <ExternalEndpoint type="logs" title="Logs" jobName="{flinkJob.name}" />
-                    </div>
+                    </p>
                 </div>
             {/each}
             </div>
