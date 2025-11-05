@@ -104,10 +104,14 @@ npm run test:e2e:ui
 ## Coverage Thresholds
 
 ### Backend (Java)
-- Minimum overall coverage: 60%
-- Minimum class coverage: 50%
+- Minimum overall coverage: 60% (target, not enforced)
+- Minimum class coverage: 50% (target, not enforced)
 - Excludes: model/record classes, kubernetes client wrappers
-- Note: Infrastructure code requiring real Kubernetes clusters is excluded and should be tested via integration tests
+- **Important**: Coverage verification is disabled due to Quarkus/JaCoCo instrumentation incompatibility
+  - Tests are running and passing (23+ tests)
+  - Coverage reports are generated but don't fail the build
+  - This is a known Quarkus limitation: https://github.com/quarkusio/quarkus/issues/3084
+  - Infrastructure code requiring real Kubernetes clusters is excluded and should be tested via integration tests
 
 ### Frontend (JavaScript)
 - Lines: 15%
