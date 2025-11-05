@@ -3,8 +3,19 @@ import { get } from 'svelte/store';
 import { settings } from '../../lib/stores/settings';
 
 describe('settings store', () => {
+  const defaults = {
+    'refreshInterval': '30',
+    'displayMode': 'tabular',
+    'showJobParallelism': true,
+    'showJobFlinkVersion': true,
+    'showJobImage': true
+  };
+
   beforeEach(() => {
-    localStorage.clear();
+    // Reset store to defaults before each test
+    settings.set(defaults);
+    // Clear localStorage mocks
+    localStorage.setItem.mockClear();
   });
 
   it('should have default values', () => {
