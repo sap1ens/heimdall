@@ -3,54 +3,54 @@ import { render } from '@testing-library/svelte/svelte5';
 import JobType from '../../lib/JobType.svelte';
 
 describe('JobType component', () => {
-  it('should render "A" for APPLICATION type', () => {
+  it('should render "APP" for APPLICATION type', () => {
     const { getByText, container } = render(JobType, { props: { type: 'APPLICATION' } });
 
-    expect(getByText('A')).toBeInTheDocument();
+    expect(getByText('APP')).toBeInTheDocument();
 
-    const paragraph = container.querySelector('p');
-    expect(paragraph).toHaveAttribute('title', 'Type: APPLICATION');
+    const span = container.querySelector('span');
+    expect(span).toHaveAttribute('title', 'Application Job');
   });
 
-  it('should render "S" for SESSION type', () => {
+  it('should render "SESSION" for SESSION type', () => {
     const { getByText, container } = render(JobType, { props: { type: 'SESSION' } });
 
-    expect(getByText('S')).toBeInTheDocument();
+    expect(getByText('SESSION')).toBeInTheDocument();
 
-    const paragraph = container.querySelector('p');
-    expect(paragraph).toHaveAttribute('title', 'Type: SESSION');
+    const span = container.querySelector('span');
+    expect(span).toHaveAttribute('title', 'Session Job');
   });
 
-  it('should have correct CSS classes', () => {
+  it('should have correct CSS classes for APPLICATION', () => {
     const { container } = render(JobType, { props: { type: 'APPLICATION' } });
 
-    const paragraph = container.querySelector('p');
-    expect(paragraph).toHaveClass('ml-1', 'px-1', 'border', 'border-gray-500', 'rounded', 'bg-white');
+    const span = container.querySelector('span');
+    expect(span).toHaveClass('px-2', 'py-1', 'rounded', 'text-xs', 'font-semibold', 'bg-blue-100', 'text-blue-800', 'border', 'border-blue-300');
   });
 
   it('should render nothing for unknown type', () => {
     const { container } = render(JobType, { props: { type: 'UNKNOWN' } });
 
-    const paragraph = container.querySelector('p');
-    expect(paragraph).toBeInTheDocument();
-    expect(paragraph.textContent.trim()).toBe('');
+    const span = container.querySelector('span');
+    expect(span).toBeNull();
   });
 
   it('should handle null type gracefully', () => {
     const { container } = render(JobType, { props: { type: null } });
 
-    const paragraph = container.querySelector('p');
-    expect(paragraph).toBeInTheDocument();
+    const span = container.querySelector('span');
+    expect(span).toBeNull();
   });
 
   it('should update when type prop changes', async () => {
-    const { getByText, component, rerender } = render(JobType, { props: { type: 'APPLICATION' } });
+    const { getByText, component } = render(JobType, { props: { type: 'APPLICATION' } });
 
-    expect(getByText('A')).toBeInTheDocument();
+    expect(getByText('APP')).toBeInTheDocument();
 
     // Update the prop
+    component.type = 'SESSION';
     await component.$set({ type: 'SESSION' });
 
-    expect(getByText('S')).toBeInTheDocument();
+    expect(getByText('SESSION')).toBeInTheDocument();
   });
 });
