@@ -37,6 +37,9 @@ java {
 
 test {
     systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+    // Suppress JaCoCo bytecode mismatch warnings with Quarkus augmentation
+    systemProperty "jacoco-agent.output", "file"
+    systemProperty "jacoco-agent.dumponexit", "true"
     finalizedBy jacocoTestReport
 }
 
@@ -52,23 +55,25 @@ jacocoTestReport {
         csv.required = false
     }
     afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
+        // Use the original class files to avoid Quarkus bytecode augmentation mismatch
+        classDirectories.setFrom(files(
+            fileTree(dir: "${buildDir}/classes/java/main", exclude: [
                 '**/model/**',  // Exclude simple model/record classes
                 '**/kubernetes/**',  // Exclude K8s client wrappers (need real cluster to test)
             ])
-        }))
+        ))
     }
 }
 
 jacocoTestCoverageVerification {
     afterEvaluate {
-        classDirectories.setFrom(files(classDirectories.files.collect {
-            fileTree(dir: it, exclude: [
+        // Use the original class files to avoid Quarkus bytecode augmentation mismatch
+        classDirectories.setFrom(files(
+            fileTree(dir: "${buildDir}/classes/java/main", exclude: [
                 '**/model/**',  // Exclude simple model/record classes
                 '**/kubernetes/**',  // Exclude K8s client wrappers (need real cluster to test)
             ])
-        }))
+        ))
     }
     violationRules {
         rule {
