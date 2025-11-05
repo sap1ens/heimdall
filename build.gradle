@@ -90,10 +90,10 @@ jacocoTestCoverageVerification {
     }
 }
 
-// Note: JaCoCo coverage verification disabled due to Quarkus test instrumentation issues
-// Coverage reports are still generated, but won't fail the build
-// See: https://github.com/quarkusio/quarkus/issues/3084
-// check.dependsOn jacocoTestCoverageVerification
+// JaCoCo coverage verification enabled
+// Using afterEvaluate to configure classDirectories helps avoid Quarkus instrumentation mismatch
+// If build fails with bytecode errors, verify Quarkus and JaCoCo versions are compatible
+check.dependsOn jacocoTestCoverageVerification
 
 compileJava {
     options.encoding = 'UTF-8'

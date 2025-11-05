@@ -1,0 +1,18 @@
+# Build outputs
+dist
+build
+coverage
+
+# Dependencies
+node_modules
+
+# Test results
+playwright-report
+test-results
+
+# Config files that should keep their formatting
+package-lock.json
+
+# Generated files
+*.min.js
+*.min.css

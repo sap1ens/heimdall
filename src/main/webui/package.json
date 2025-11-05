@@ -12,7 +12,11 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "test:e2e": "playwright test",
-    "test:e2e:ui": "playwright test --ui"
+    "test:e2e:ui": "playwright test --ui",
+    "lint": "eslint . --ext .js,.svelte",
+    "lint:fix": "eslint . --ext .js,.svelte --fix",
+    "format": "prettier --write \"**/*.{js,svelte,json,css,md}\"",
+    "format:check": "prettier --check \"**/*.{js,svelte,json,css,md}\""
   },
   "devDependencies": {
     "@playwright/test": "^1.40.1",
@@ -22,8 +26,12 @@
     "@testing-library/svelte": "^4.0.5",
     "@vitest/coverage-v8": "^4.0.7",
     "autoprefixer": "^10.4.14",
+    "eslint": "^8.57.0",
+    "eslint-plugin-svelte": "^2.35.1",
     "jsdom": "^23.0.1",
     "postcss": "^8.4.24",
+    "prettier": "^3.2.5",
+    "prettier-plugin-svelte": "^3.2.2",
     "svelte": "^5.43.3",
     "tailwindcss": "^3.3.2",
     "vite": "^7.2.0",

@@ -1,0 +1,73 @@
+version: '3.8'
+
+services:
+  # Mock server for frontend development without Kubernetes
+  mock-server:
+    image: node:20-alpine
+    container_name: heimdall-mock-server
+    working_dir: /app
+    volumes:
+      - ./src/main/webui:/app:ro
+    ports:
+      - "8080:8080"
+    command: node mock-server.js
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8080/health"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 5s
+    networks:
+      - heimdall
+
+  # Frontend development server
+  frontend:
+    image: node:20-alpine
+    container_name: heimdall-frontend
+    working_dir: /app
+    volumes:
+      - ./src/main/webui:/app
+      - frontend_node_modules:/app/node_modules
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_API_URL=http://localhost:8080
+    command: sh -c "npm install && npm run dev -- --host 0.0.0.0"
+    depends_on:
+      mock-server:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:5173"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
+    networks:
+      - heimdall
+
+  # Backend (requires building the Quarkus app first)
+  # Uncomment this section if you want to run the full backend
+  # backend:
+  #   build:
+  #     context: .
+  #     dockerfile: src/main/docker/Dockerfile.jvm
+  #   container_name: heimdall-backend
+  #   ports:
+  #     - "8080:8080"
+  #   environment:
+  #     - QUARKUS_HTTP_CORS_ORIGINS=http://localhost:5173
+  #     - HEIMDALL_JOBLOCATOR_K8S_OPERATOR_ENABLED=true
+  #     - HEIMDALL_JOBLOCATOR_K8S_OPERATOR_NAMESPACE_TO_WATCH=default
+  #   # Uncomment and configure these if running with real Kubernetes cluster
+  #   # volumes:
+  #   #   - ~/.kube/config:/home/jboss/.kube/config:ro
+  #   networks:
+  #     - heimdall
+
+networks:
+  heimdall:
+    driver: bridge
+
+volumes:
+  frontend_node_modules:
+    driver: local
