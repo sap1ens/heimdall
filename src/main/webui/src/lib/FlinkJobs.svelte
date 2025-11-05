@@ -118,8 +118,8 @@
 <Modal bind:showModal={showSettingsModal}>
     <div class="space-y-4">
         <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-2">Refresh Interval</label>
-            <select name="refreshInterval" bind:value={$settings.refreshInterval}
+            <label for="refreshInterval" class="block text-sm font-semibold text-gray-700 mb-2">Refresh Interval</label>
+            <select id="refreshInterval" name="refreshInterval" bind:value={$settings.refreshInterval}
                     class="w-full input-modern">
                 <option value="-1">No refresh</option>
                 <option value="10">10 seconds</option>
@@ -129,7 +129,7 @@
             </select>
         </div>
         <div>
-            <label class="block text-sm font-semibold text-gray-700 mb-3">Display Details</label>
+            <p class="block text-sm font-semibold text-gray-700 mb-3">Display Details</p>
             <div class="space-y-2">
                 <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
                     <input name="showJobParallelism" type="checkbox" bind:checked={$settings.showJobParallelism}
@@ -154,13 +154,13 @@
     <div class="flex items-center justify-between gap-4 flex-wrap">
         <div class="flex items-center gap-3 flex-wrap">
             <div class="flex flex-col">
-                <label class="text-xs font-semibold text-gray-600 mb-1">Filter by Name</label>
-                <input name="jobNameFilter" type="text" placeholder="Search jobs..." bind:value={jobNameFilter}
+                <label for="jobNameFilter" class="text-xs font-semibold text-gray-600 mb-1">Filter by Name</label>
+                <input id="jobNameFilter" name="jobNameFilter" type="text" placeholder="Search jobs..." bind:value={jobNameFilter}
                        class="input-modern text-sm px-4 py-2 w-64">
             </div>
             <div class="flex flex-col">
-                <label class="text-xs font-semibold text-gray-600 mb-1">Status</label>
-                <select name="statusFilter" bind:value={statusFilter}
+                <label for="statusFilter" class="text-xs font-semibold text-gray-600 mb-1">Status</label>
+                <select id="statusFilter" name="statusFilter" bind:value={statusFilter}
                         class="input-modern text-sm px-4 py-2">
                     <option value="">All statuses</option>
                     {#each jobStatusList as status}
@@ -169,8 +169,8 @@
                 </select>
             </div>
             <div class="flex flex-col">
-                <label class="text-xs font-semibold text-gray-600 mb-1">Namespace</label>
-                <select name="namespaceFilter" bind:value={namespaceFilter}
+                <label for="namespaceFilter" class="text-xs font-semibold text-gray-600 mb-1">Namespace</label>
+                <select id="namespaceFilter" name="namespaceFilter" bind:value={namespaceFilter}
                         class="input-modern text-sm px-4 py-2">
                     <option value="">All namespaces</option>
                     {#each jobNamespaceList as namespace}
@@ -217,14 +217,22 @@
                             Flink Job
                             <div class="flex flex-col ml-2">
                                 <div
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by job name ascending"
                                         class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1 transition-colors"
                                         on:click={() => activeSorting = 'jobNameAsc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'jobNameAsc')}
                                         class:border-b-gray-400={activeSorting !== 'jobNameAsc'}
                                         class:border-b-primary-600={activeSorting === 'jobNameAsc'}
                                 ></div>
                                 <div
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by job name descending"
                                         class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer transition-colors"
                                         on:click={() => activeSorting = 'jobNameDesc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'jobNameDesc')}
                                         class:border-t-gray-400={activeSorting !== 'jobNameDesc'}
                                         class:border-t-primary-600={activeSorting === 'jobNameDesc'}
                                 ></div>
@@ -236,14 +244,22 @@
                             Namespace
                             <div class="flex flex-col ml-2">
                                 <div
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by namespace ascending"
                                         class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1 transition-colors"
                                         on:click={() => activeSorting = 'namespaceAsc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'namespaceAsc')}
                                         class:border-b-gray-400={activeSorting !== 'namespaceAsc'}
                                         class:border-b-primary-600={activeSorting === 'namespaceAsc'}
                                 ></div>
                                 <div
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by namespace descending"
                                         class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer transition-colors"
                                         on:click={() => activeSorting = 'namespaceDesc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'namespaceDesc')}
                                         class:border-t-gray-400={activeSorting !== 'namespaceDesc'}
                                         class:border-t-primary-600={activeSorting === 'namespaceDesc'}
                                 ></div>
@@ -256,14 +272,22 @@
                             Resources
                             <div class="flex flex-col ml-2">
                                 <div
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by resources ascending"
                                         class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1 transition-colors"
                                         on:click={() => activeSorting = 'resourcesAsc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'resourcesAsc')}
                                         class:border-b-gray-400={activeSorting !== 'resourcesAsc'}
                                         class:border-b-primary-600={activeSorting === 'resourcesAsc'}
                                 ></div>
                                 <div
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by resources descending"
                                         class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer transition-colors"
                                         on:click={() => activeSorting = 'resourcesDesc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'resourcesDesc')}
                                         class:border-t-gray-400={activeSorting !== 'resourcesDesc'}
                                         class:border-t-primary-600={activeSorting === 'resourcesDesc'}
                                 ></div>
@@ -275,14 +299,22 @@
                             Started At
                             <div class="flex flex-col ml-2">
                                 <div
+                                     role="button"
+                                     tabindex="0"
+                                     aria-label="Sort by start time ascending"
                                      class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1 transition-colors"
                                      on:click={() => activeSorting = 'startTimeAsc'}
+                                     on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'startTimeAsc')}
                                      class:border-b-gray-400={activeSorting !== 'startTimeAsc'}
                                      class:border-b-primary-600={activeSorting === 'startTimeAsc'}
                                 ></div>
                                 <div
+                                     role="button"
+                                     tabindex="0"
+                                     aria-label="Sort by start time descending"
                                      class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer transition-colors"
                                      on:click={() => activeSorting = 'startTimeDesc'}
+                                     on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'startTimeDesc')}
                                      class:border-t-gray-400={activeSorting !== 'startTimeDesc'}
                                      class:border-t-primary-600={activeSorting === 'startTimeDesc'}
                                 ></div>

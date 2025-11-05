@@ -13,9 +13,10 @@
         bind:this={dialog}
         on:close={() => (showModal = false)}
         on:click|self={() => dialog.close()}
+        on:keydown={(e) => e.key === 'Escape' && dialog.close()}
         class="w-[500px] min-h-[200px] p-8 outline-none rounded-2xl shadow-2xl backdrop:bg-black/50 border-0"
 >
-    <div on:click|stopPropagation class="relative">
+    <div on:click|stopPropagation on:keydown|stopPropagation class="relative">
         <div class="mb-6">
             <h2 class="text-2xl font-bold text-gray-800 flex items-center gap-2">
                 ⚙️ Settings

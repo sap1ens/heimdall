@@ -19,8 +19,8 @@
     "vite": "^4.3.9"
   },
   "dependencies": {
-    "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/free-brands-svg-icons": "^6.4.0",
+    "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "axios": "^1.4.0",
     "date-fns": "^2.30.0",
     "svelte-fa": "^3.0.4"
