@@ -15,12 +15,13 @@ jobs:
         with:
           fetch-depth: 0  # Fetch all history and tags for git-based versioning
 
-      - name: Clean Gradle cache before setup
+      - name: Aggressive Gradle cache cleanup
         run: |
-          echo "Removing Gradle cache to prevent corruption issues..."
-          rm -rf ~/.gradle/caches/jars-9
-          rm -rf ~/.gradle/caches/modules-2
-        continue-on-error: true
+          echo "Removing all Gradle caches to prevent corruption..."
+          rm -rf /home/runner/.gradle/caches/ || true
+          rm -rf ~/.gradle/caches/ || true
+          rm -rf $HOME/.gradle/caches/ || true
+          echo "Cache cleanup complete"
 
       - name: Setup JDK
         uses: actions/setup-java@v4
@@ -33,6 +34,7 @@ jobs:
         with:
           gradle-version: '8.1.1'
           cache-disabled: true
+          cache-cleanup: on-success
 
       - name: Setup Node.js
         uses: actions/setup-node@v4
