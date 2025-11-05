@@ -150,53 +150,48 @@
         </div>
     </div>
 </Modal>
-<div class="bg-white rounded-xl shadow-md p-6 mb-6 mt-6">
-    <div class="flex items-center justify-between gap-4 flex-wrap">
-        <div class="flex items-center gap-3 flex-wrap">
-            <div class="flex flex-col">
-                <label for="jobNameFilter" class="text-xs font-semibold text-gray-600 mb-1">Filter by Name</label>
-                <input id="jobNameFilter" name="jobNameFilter" type="text" placeholder="Search jobs..." bind:value={jobNameFilter}
-                       class="input-modern text-sm px-4 py-2 w-64">
-            </div>
-            <div class="flex flex-col">
-                <label for="statusFilter" class="text-xs font-semibold text-gray-600 mb-1">Status</label>
-                <select id="statusFilter" name="statusFilter" bind:value={statusFilter}
-                        class="input-modern text-sm px-4 py-2">
-                    <option value="">All statuses</option>
-                    {#each jobStatusList as status}
-                        <option value="{status}">{status}</option>
-                    {/each}
-                </select>
-            </div>
-            <div class="flex flex-col">
-                <label for="namespaceFilter" class="text-xs font-semibold text-gray-600 mb-1">Namespace</label>
-                <select id="namespaceFilter" name="namespaceFilter" bind:value={namespaceFilter}
-                        class="input-modern text-sm px-4 py-2">
-                    <option value="">All namespaces</option>
-                    {#each jobNamespaceList as namespace}
-                        <option value="{namespace}">{namespace}</option>
-                    {/each}
-                </select>
-            </div>
+<div class="flex items-center justify-between py-4 text-base flex-wrap gap-4">
+    <div class="flex items-center gap-3 flex-wrap">
+        <div>
+            <label for="jobNameFilter" class="text-sm font-medium text-gray-700 mr-2">Filter by name:</label>
+            <input id="jobNameFilter" name="jobNameFilter" type="text" placeholder="Flink Job name" bind:value={jobNameFilter}
+                   class="input-modern">
         </div>
-        <div class="flex items-center gap-2">
-            {#if $settings.displayMode === 'card'}
-            <button title="Table view" on:click={() => $settings.displayMode = 'tabular'}
-                    class="p-3 rounded-lg bg-gray-100 hover:bg-primary-100 hover:text-primary-600 transition-colors">
-                <Fa fw icon={faTable} size="lg" />
-            </button>
-            {/if}
-            {#if $settings.displayMode === 'tabular'}
-            <button title="Card view" on:click={() => $settings.displayMode = 'card'}
-                    class="p-3 rounded-lg bg-gray-100 hover:bg-primary-100 hover:text-primary-600 transition-colors">
-                <Fa fw icon={faIdCard} size="lg" />
-            </button>
-            {/if}
-            <button title="Settings" on:click={() => showSettingsModal = true}
-                    class="p-3 rounded-lg bg-gray-100 hover:bg-primary-100 hover:text-primary-600 transition-colors">
-                <Fa fw icon={faGear} size="lg" />
-            </button>
+        <div>
+            <label for="statusFilter" class="text-sm font-medium text-gray-700 mr-2">Status:</label>
+            <select id="statusFilter" name="statusFilter" bind:value={statusFilter}
+                    class="input-modern">
+                <option value="">Show all</option>
+                {#each jobStatusList as status}
+                    <option value="{status}">{status}</option>
+                {/each}
+            </select>
         </div>
+        <div>
+            <label for="namespaceFilter" class="text-sm font-medium text-gray-700 mr-2">Namespace:</label>
+            <select id="namespaceFilter" name="namespaceFilter" bind:value={namespaceFilter}
+                    class="input-modern">
+                <option value="">Show all</option>
+                {#each jobNamespaceList as namespace}
+                    <option value="{namespace}">{namespace}</option>
+                {/each}
+            </select>
+        </div>
+    </div>
+    <div class="flex items-center gap-2">
+        {#if $settings.displayMode === 'card'}
+        <span title="Table view" on:click={() => $settings.displayMode = 'tabular'} class="inline-block cursor-pointer">
+            <Fa fw icon={faTable} size="2x" class="text-gray-500 hover:text-gray-700" />
+        </span>
+        {/if}
+        {#if $settings.displayMode === 'tabular'}
+        <span title="Card view" on:click={() => $settings.displayMode = 'card'} class="inline-block cursor-pointer">
+            <Fa fw icon={faIdCard} size="2x" class="text-gray-500 hover:text-gray-700" />
+        </span>
+        {/if}
+        <span title="Settings" on:click={() => showSettingsModal = true} class="inline-block cursor-pointer ml-1">
+            <Fa fw icon={faGear} size="2x" class="text-gray-500 hover:text-gray-700" />
+        </span>
     </div>
 </div>
 
@@ -208,11 +203,10 @@
 {:else}
     {#if visibleFlinkJobs.length > 0 || jobNameFilter || statusFilter}
         {#if $settings.displayMode === 'tabular'}
-            <div class="bg-white rounded-xl shadow-md overflow-hidden">
-            <table class="table-auto w-full">
-                <thead class="text-lg bg-gradient-to-r from-gray-50 to-gray-100">
-                <tr>
-                    <th class="border-b-2 border-gray-200 p-4 w-3/12">
+            <table class="table-auto w-full border">
+                <thead class="text-lg">
+                <tr class="bg-slate-50">
+                    <th class="border border-slate-300 p-2 w-3/12">
                         <div class="flex items-center justify-center font-semibold text-gray-700">
                             Flink Job
                             <div class="flex flex-col ml-2">
@@ -353,29 +347,21 @@
                             </div>
                         </td>
                         <td class="p-4">
-                            <span class="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 px-3 py-1.5 rounded-lg text-sm font-mono font-medium shadow-sm">{flinkJob.namespace}</span>
+                            <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-mono">{flinkJob.namespace}</span>
                         </td>
                         <td class="p-4">
-                            <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-{statusColor(flinkJob.status)}-100">
-                                <div class="w-2.5 h-2.5 rounded-full bg-{statusColor(flinkJob.status)}-500 animate-pulse"></div>
-                                <span class="text-{statusColor(flinkJob.status)}-700 font-medium text-sm">{flinkJob.status}</span>
+                            <div class="flex items-center">
+                                <div class="mr-1.5 w-3 h-3 rounded-full bg-{statusColor(flinkJob.status)}-500"></div>
+                                {flinkJob.status}
                             </div>
                         </td>
                         <td class="p-4">
-                            <div class="space-y-1 text-sm">
-                                <p class="text-gray-700">
-                                    <span class="font-semibold text-gray-900">JM{#if flinkJob.resources.jm.replicas > 1}s{/if}:</span>
-                                    <span class="bg-primary-50 text-primary-700 px-2 py-0.5 rounded ml-1 font-medium">{flinkJob.resources.jm.replicas}</span>
-                                    <span class="text-gray-500 ml-1">× {flinkJob.resources.jm.cpu} cpu, {flinkJob.resources.jm.mem}</span>
-                                </p>
-                                {#if flinkJob.resources.tm.replicas > 0}
-                                <p class="text-gray-700">
-                                    <span class="font-semibold text-gray-900">TM{#if flinkJob.resources.tm.replicas > 1}s{/if}:</span>
-                                    <span class="bg-accent-50 text-accent-700 px-2 py-0.5 rounded ml-1 font-medium">{flinkJob.resources.tm.replicas}</span>
-                                    <span class="text-gray-500 ml-1">× {flinkJob.resources.tm.cpu} cpu, {flinkJob.resources.tm.mem}</span>
-                                </p>
-                                {/if}
-                            </div>
+                            <p>JobManager{#if flinkJob.resources.jm.replicas > 1}s{/if}:
+                                <strong>{flinkJob.resources.jm.replicas}</strong> x {flinkJob.resources.jm.cpu} cpu, {flinkJob.resources.jm.mem} memory</p>
+                            {#if flinkJob.resources.tm.replicas > 0}
+                            <p>TaskManager{#if flinkJob.resources.tm.replicas > 1}s{/if}:
+                                <strong>{flinkJob.resources.tm.replicas}</strong> x {flinkJob.resources.tm.cpu} cpu, {flinkJob.resources.tm.mem} memory</p>
+                            {/if}
                         </td>
                         <td class="p-4">
                             <span class="text-gray-600 text-sm">{formatStartTime(flinkJob.startTime)}</span>
@@ -396,47 +382,43 @@
             </table>
             </div>
         {:else}
-            <div class="grid gap-6 grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
+            <div class="grid gap-6 grid-cols-3">
             {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
-                <div class="card card-hover p-6 border-l-4 border-{statusColor(flinkJob.status)}-500">
-                    <div class="flex items-start justify-between pb-4">
-                        <div class="flex-1">
-                            <p class="text-lg font-semibold text-gray-900 mb-2">{displayName(flinkJob)}</p>
-                            <span class="bg-gradient-to-r from-gray-100 to-gray-200 text-gray-800 px-3 py-1 rounded-lg text-xs font-mono font-medium shadow-sm inline-block">{flinkJob.namespace}</span>
+                <div class="border border-slate-300 p-2">
+                    <div class="flex items-start justify-between pb-4 text-lg">
+                        <div>
+                            <p>{displayName(flinkJob)}</p>
+                            <p class="text-sm text-gray-500 mt-1">
+                                <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-xs font-mono">{flinkJob.namespace}</span>
+                            </p>
                         </div>
                         <JobType type={flinkJob.type} />
                     </div>
-                    <div class="pb-4">
-                        <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-{statusColor(flinkJob.status)}-100">
-                            <div class="w-2.5 h-2.5 rounded-full bg-{statusColor(flinkJob.status)}-500 animate-pulse"></div>
-                            <span class="text-{statusColor(flinkJob.status)}-700 font-medium text-sm">{flinkJob.status}</span>
-                        </div>
+                    <div class="flex items-center pb-4">
+                        <div class="mr-1.5 w-4 h-4 rounded-full bg-{statusColor(flinkJob.status)}-500"></div>
+                        {flinkJob.status}
                     </div>
-                    <div class="pb-4 space-y-2 border-t border-gray-100 pt-4">
+                    <div class="pb-4">
                         {#if $settings.showJobParallelism}
-                        <p class="text-sm text-gray-600 flex items-center gap-2">
-                            <Fa fw icon={faChartColumn} class="text-primary-500" />
-                            <span class="font-medium">Parallelism:</span> {flinkJob.parallelism || 'N/A'}
+                        <p class="text-sm text-gray-500">
+                            <Fa fw icon={faChartColumn} /> Parallelism: {flinkJob.parallelism || 'N/A' }
                         </p>
                         {/if}
-                        <p class="text-sm text-gray-600 flex items-center gap-2">
-                            <Fa fw icon={faClock} class="text-accent-500" />
-                            <span class="font-medium">Started:</span> {formatStartTime(flinkJob.startTime)}
+                        <p class="text-sm text-gray-500">
+                            <Fa fw icon={faClock} /> Started at: {formatStartTime(flinkJob.startTime)}
                         </p>
                         {#if $settings.showJobFlinkVersion && flinkJob.flinkVersion}
-                            <p class="text-sm text-gray-600 flex items-center gap-2">
-                                <Fa fw icon={faInfo} class="text-blue-500" />
-                                <span class="font-medium">Version:</span> {flinkJob.flinkVersion}
+                            <p class="text-sm text-gray-500">
+                                <Fa fw icon={faInfo} /> Flink version: {flinkJob.flinkVersion}
                             </p>
                         {/if}
                         {#if $settings.showJobImage}
-                        <p class="text-sm text-gray-600 flex items-center gap-2">
-                            <Fa fw icon={faImagePortrait} class="text-purple-500" />
-                            <span class="font-medium">Image:</span> {flinkJob.shortImage || 'N/A'}
+                        <p class="text-sm text-gray-500">
+                            <Fa fw icon={faImagePortrait} /> Image: {flinkJob.shortImage || 'N/A'}
                         </p>
                         {/if}
                     </div>
-                    <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
+                    <p>
                         <ExternalEndpoint type="flink-ui" title="Flink UI" jobName="{flinkJob.name}" />
                         <ExternalEndpoint type="flink-api" title="Flink API" jobName="{flinkJob.name}" />
                         <ExternalEndpoint type="metrics" title="Metrics" jobName="{flinkJob.name}" />

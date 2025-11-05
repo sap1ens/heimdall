@@ -16,9 +16,7 @@ function processEndpointPathPattern(pattern, jobName) {
 </script>
 
 {#if endpointPathPattern}
-    <a href="{processEndpointPathPattern(endpointPathPattern, jobName)}" target="_blank"
-       class="inline-flex items-center gap-1.5 px-3 py-1.5 bg-gradient-to-r from-accent-500 to-blue-500 hover:from-accent-600 hover:to-blue-600 text-white text-sm font-medium rounded-lg shadow-sm hover:shadow-md transition-all duration-200 transform hover:-translate-y-0.5">
-        {title}
-        <Fa fw icon={faArrowUpRightFromSquare} size="sm" />
+    <a href="{processEndpointPathPattern(endpointPathPattern, jobName)}" target="_blank" class="text-blue-600 hover:text-blue-800 mr-2">
+        {title} <Fa fw icon={faArrowUpRightFromSquare} />
     </a>
 {/if}

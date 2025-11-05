@@ -8,30 +8,18 @@
 </script>
 
 <main class="min-h-screen">
-  <div class="gradient-header shadow-lg">
-    <div class="w-11/12 mx-auto">
-      <div class="flex items-center justify-start py-6 animate-fade-in">
-        <img src={heimdallLogo} alt="Heimdall Logo" width="80" height="80" class="drop-shadow-lg" />
-        <div class="ml-4">
-          <h1 class="text-4xl font-bold text-white drop-shadow-md">Heimdall</h1>
-          <p class="text-white/90 text-sm mt-1">Apache Flink Job Monitor</p>
-        </div>
-      </div>
+  <div class="w-11/12 mx-auto mt-4 pb-4 flex flex-col grow">
+    <div class="flex items-center justify-start mb-6">
+      <img src={heimdallLogo} alt="Heimdall Logo" width="100" height="100" />
+      <h1 class="text-3xl font-bold py-6 text-[#e6516f] ml-3">Heimdall</h1>
     </div>
-  </div>
-  <div class="w-11/12 mx-auto pb-8 flex flex-col grow">
-    <div class="animate-slide-in">
-      <FlinkJobs/>
-    </div>
-    <div class="mt-auto pt-8 text-center">
-      <div class="inline-flex items-center gap-2 bg-white px-6 py-3 rounded-full shadow-md">
-        <Fa fw icon={faGithub} class="text-gray-600" />
-        <a href="https://github.com/sap1ens/heimdall" target="_blank" class="text-gray-600 hover:text-primary-600 transition-colors">sap1ens/heimdall</a>
-        {#if $appConfig?.appVersion}
-        <span class="text-gray-400">·</span>
-        <span class="text-gray-500 font-mono text-sm">v{$appConfig?.appVersion}</span>
-        {/if}
-      </div>
+    <FlinkJobs/>
+    <div class="mt-auto pt-4 text-center text-gray-500">
+      <Fa fw icon={faGithub} />
+      <a href="https://github.com/sap1ens/heimdall" target="_blank" class="underline hover:no-underline">sap1ens/heimdall</a>
+      {#if $appConfig?.appVersion}
+      · v{$appConfig?.appVersion}
+      {/if}
     </div>
   </div>
 </main>

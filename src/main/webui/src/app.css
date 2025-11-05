@@ -8,7 +8,7 @@ body {
     font-variant: tabular-nums;
     line-height: 1.5715;
     font-feature-settings: "tnum","tnum";
-    background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+    background: #f5f5f5;
     min-height: 100vh;
 }
 
@@ -18,40 +18,10 @@ svg {
 
 @layer components {
     .card {
-        @apply bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300;
-    }
-
-    .card-hover {
-        @apply transform hover:-translate-y-1 transition-all duration-300;
-    }
-
-    .status-badge {
-        @apply inline-flex items-center px-3 py-1 rounded-full text-sm font-medium;
-    }
-
-    .btn-primary {
-        @apply bg-primary-500 hover:bg-primary-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
-    }
-
-    .btn-secondary {
-        @apply bg-accent-500 hover:bg-accent-600 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-200;
+        @apply bg-white rounded shadow hover:shadow-md transition-shadow duration-200;
     }
 
     .input-modern {
-        @apply border-gray-300 rounded-lg shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-all duration-200;
-    }
-
-    .gradient-header {
-        @apply bg-gradient-to-r from-primary-600 via-primary-500 to-accent-500;
-    }
-}
-
-@layer utilities {
-    .animate-fade-in {
-        animation: fadeIn 0.3s ease-in-out;
-    }
-
-    .animate-slide-in {
-        animation: slideIn 0.3s ease-out;
+        @apply border-gray-300 rounded shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500;
     }
 }
