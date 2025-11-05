@@ -7,8 +7,12 @@ export const appConfig = readable(null, function start(set) {
             set(response.data);
         })
         .catch(function (error) {
-            // TODO
-            console.log(error);
+            console.error('Failed to load application config:', error.message || error);
+            // Set a fallback config or error state
+            set({
+                error: 'Failed to load configuration. Some features may not work correctly.',
+                loaded: false
+            });
         })
 
     return function stop() {};

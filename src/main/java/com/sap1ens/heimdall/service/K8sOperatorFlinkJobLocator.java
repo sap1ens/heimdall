@@ -6,6 +6,7 @@ import com.sap1ens.heimdall.model.FlinkJob;
 import com.sap1ens.heimdall.model.FlinkJobResources;
 import com.sap1ens.heimdall.model.FlinkJobType;
 import io.quarkus.arc.lookup.LookupIfProperty;
+import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.inject.Singleton;
 import java.util.List;
@@ -30,11 +31,19 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
   @Override
   public List<FlinkJob> findAll() {
     var namespaces = appConfig.joblocator().k8sOperator().namespacesToWatch();
+    Log.debugf("Searching for Flink deployments in namespaces: %s", namespaces);
+
     var flinkDeployments = flinkDeploymentClient.find(namespaces);
+    Log.infof("Found %d Flink deployment(s) in namespaces: %s", flinkDeployments.size(), namespaces);
+
     return flinkDeployments.stream().map(this::toFlinkJob).collect(Collectors.toList());
   }
 
   private FlinkJob toFlinkJob(FlinkDeployment flinkDeployment) {
+    var deploymentName = flinkDeployment.getMetadata().getName();
+    var namespace = flinkDeployment.getMetadata().getNamespace();
+    Log.debugf("Processing Flink deployment '%s' in namespace '%s'", deploymentName, namespace);
+
     var jobType = getJobType(flinkDeployment);
 
     var jmSpec = flinkDeployment.getSpec().getJobManager();
@@ -44,6 +53,9 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
     if (tmReplicas == 0 && jobType.equals(FlinkJobType.APPLICATION)) {
       // Try getting the number of replicas from the status
       tmReplicas = flinkDeployment.getStatus().getTaskManager().getReplicas();
+      Log.debugf(
+          "Task manager replicas not set in spec for '%s', using status value: %d",
+          deploymentName, tmReplicas);
     }
 
     return new FlinkJob(
@@ -87,24 +99,41 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
 
   protected int getParallelism(FlinkDeployment flinkDeployment) {
     var parallelism = 0;
+    var deploymentName = flinkDeployment.getMetadata().getName();
+
     // First, try to get parallelism from the job spec
     var jobSpecParallelism =
         Optional.ofNullable(flinkDeployment.getSpec().getJob())
             .map(JobSpec::getParallelism)
             .orElse(0);
+
     if (jobSpecParallelism != 0) {
       parallelism = jobSpecParallelism;
-      // If parallelism is not set in the job spec, try to calculate it based on the number of
-      // replicas and configured task slots
-      // FIXME: this might not be accurate
+      Log.debugf(
+          "Using job spec parallelism %d for deployment '%s'", parallelism, deploymentName);
     } else {
+      // If parallelism is not set in the job spec, try to calculate it based on the number of
+      // task manager replicas and configured task slots.
+      // NOTE: This calculation assumes all task slots are available and may not be accurate in
+      // scenarios where:
+      // - Task slots are partially occupied by other jobs (in session clusters)
+      // - Auto-scaling is enabled and replicas change dynamically
+      // - Custom slot sharing groups are configured
       var taskSlots =
           Optional.ofNullable(flinkDeployment.getSpec().getFlinkConfiguration())
               .map(config -> config.get(TM_NUMBER_OF_TASK_SLOTS))
               .orElse(null);
       var replicas = flinkDeployment.getSpec().getTaskManager().getReplicas();
+
       if (taskSlots != null && replicas != null) {
         parallelism = Integer.parseInt(taskSlots) * replicas;
+        Log.debugf(
+            "Calculated parallelism %d (taskSlots: %s, replicas: %d) for deployment '%s'",
+            parallelism, taskSlots, replicas, deploymentName);
+      } else {
+        Log.warnf(
+            "Could not determine parallelism for deployment '%s': taskSlots=%s, replicas=%s",
+            deploymentName, taskSlots, replicas);
       }
     }
     return parallelism;
