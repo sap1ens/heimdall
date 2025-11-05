@@ -90,9 +90,16 @@ jacocoTestCoverageVerification {
     }
 }
 
-// Note: JaCoCo coverage verification disabled due to Quarkus test instrumentation issues
-// Coverage reports are still generated, but won't fail the build
+// JaCoCo coverage verification is disabled due to Quarkus bytecode augmentation incompatibility
+// Quarkus augments bytecode at runtime, causing a mismatch with JaCoCo's expectations
+// The afterEvaluate configuration helps with report generation but doesn't fix verification
+// Coverage reports are still generated successfully and can be reviewed manually
 // See: https://github.com/quarkusio/quarkus/issues/3084
+//
+// To view coverage reports after running tests:
+//   ./gradlew test jacocoTestReport
+//   open build/reports/jacoco/test/html/index.html
+//
 // check.dependsOn jacocoTestCoverageVerification
 
 compileJava {

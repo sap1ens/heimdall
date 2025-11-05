@@ -137,5 +137,3 @@ npm audit fix
 - [Svelte 4 Release Notes](https://svelte.dev/blog/svelte-4)
 - [Svelte 5 Migration Guide](https://svelte.dev/docs/svelte/v5-migration-guide)
 - [npm audit documentation](https://docs.npmjs.com/cli/v10/commands/npm-audit)
-
-For security issues, see [SECURITY.md](../../../SECURITY.md) in the root directory (if it exists).

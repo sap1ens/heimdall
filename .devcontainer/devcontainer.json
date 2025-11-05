@@ -1,0 +1,122 @@
+{
+  "name": "Heimdall Development",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "frontend",
+  "workspaceFolder": "/workspace",
+
+  // Alternative: Use a pre-built image instead of docker-compose
+  // "image": "mcr.microsoft.com/devcontainers/java:17",
+
+  "features": {
+    "ghcr.io/devcontainers/features/java:1": {
+      "version": "17",
+      "installGradle": "true",
+      "gradleVersion": "8.1.1"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "20"
+    },
+    "ghcr.io/devcontainers/features/docker-in-docker:2": {},
+    "ghcr.io/devcontainers/features/git:1": {}
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // Java extensions
+        "redhat.java",
+        "vscjava.vscode-java-debug",
+        "vscjava.vscode-java-test",
+        "vscjava.vscode-gradle",
+        "vscjava.vscode-java-dependency",
+
+        // Frontend extensions
+        "svelte.svelte-vscode",
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        "bradlc.vscode-tailwindcss",
+
+        // General extensions
+        "eamodio.gitlens",
+        "github.copilot",
+        "ms-azuretools.vscode-docker",
+        "editorconfig.editorconfig",
+        "streetsidesoftware.code-spell-checker"
+      ],
+      "settings": {
+        // Editor settings
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "editor.codeActionsOnSave": {
+          "source.fixAll.eslint": "explicit"
+        },
+
+        // Java settings
+        "[java]": {
+          "editor.defaultFormatter": "redhat.java",
+          "editor.formatOnSave": true
+        },
+        "java.configuration.updateBuildConfiguration": "automatic",
+
+        // Svelte settings
+        "[svelte]": {
+          "editor.defaultFormatter": "svelte.svelte-vscode"
+        },
+
+        // ESLint settings
+        "eslint.validate": [
+          "javascript",
+          "svelte"
+        ],
+        "eslint.workingDirectories": [
+          "./src/main/webui"
+        ],
+
+        // Files to exclude from explorer
+        "files.exclude": {
+          "**/.git": true,
+          "**/.gradle": true,
+          "**/build": true,
+          "**/node_modules": true,
+          "**/dist": true
+        }
+      }
+    }
+  },
+
+  // Forward ports for development
+  "forwardPorts": [
+    8080,  // Backend/Mock API
+    5173   // Frontend dev server
+  ],
+
+  "portsAttributes": {
+    "8080": {
+      "label": "Backend API",
+      "onAutoForward": "notify"
+    },
+    "5173": {
+      "label": "Frontend Dev Server",
+      "onAutoForward": "openBrowser"
+    }
+  },
+
+  // Post-create command to install dependencies
+  "postCreateCommand": "npm install && cd src/main/webui && npm install",
+
+  // Use 'postStartCommand' to run commands after the container starts
+  // "postStartCommand": "make dev",
+
+  // Set environment variables
+  "remoteEnv": {
+    "JAVA_HOME": "/usr/local/sdkman/candidates/java/current"
+  },
+
+  // Use 'forwardPorts' to make a list of ports inside the container available locally
+  "runArgs": [
+    "--init"
+  ],
+
+  // Comment out to connect as root instead
+  "remoteUser": "node"
+}

@@ -137,11 +137,54 @@ This project uses:
 - **Build Tool:** Gradle 8.1.1
 - **Frontend Integration:** [Quinoa](https://quarkiverse.github.io/quarkiverse-docs/quarkus-quinoa/dev/) (automatically builds frontend during backend build)
 
-### Prerequisites
+### Quick Development Setup
 
+Choose one of the following options to get started quickly:
+
+#### Option 1: Docker Compose (Recommended for Beginners)
+
+Start the development environment with frontend and mock backend:
+
+```bash
+# Install dependencies
+npm install
+cd src/main/webui && npm install && cd ../..
+
+# Start development environment
+make dev
+
+# Or manually:
+docker-compose up
+```
+
+This starts:
+- Frontend dev server on http://localhost:5173
+- Mock API server on http://localhost:8080
+
+See [docker-compose.yml](docker-compose.yml) for configuration.
+
+#### Option 2: VS Code Dev Container (Recommended for Teams)
+
+Open this repository in VS Code and click "Reopen in Container". All tools and dependencies are pre-configured.
+
+See [.devcontainer/README.md](.devcontainer/README.md) for details.
+
+#### Option 3: Local Setup
+
+**Prerequisites:**
 - Java 17 or later
 - Node.js 20 or later
 - Gradle 8.1.1 (or use the wrapper `./gradlew`)
+
+**Setup:**
+```bash
+# Install dependencies
+npm install
+cd src/main/webui && npm install && cd ../..
+
+# Install pre-commit hooks
+npm run prepare
+```
 
 ### Running the application in dev mode
 
@@ -159,15 +202,83 @@ This will:
 
 ### Frontend Development
 
-To work on the frontend separately:
+#### With Mock Server (No Kubernetes Required)
+
+Perfect for frontend-only development:
 
 ```bash
+# Terminal 1: Start mock API server
 cd src/main/webui
-npm install
+node mock-server.js
+
+# Terminal 2: Start frontend dev server
 npm run dev
 ```
 
-The frontend will be available at http://localhost:5173 and will proxy API requests to the backend.
+The frontend will be available at http://localhost:5173.
+
+#### With Real Backend
+
+To work with the actual backend:
+
+```bash
+# Terminal 1: Start backend
+./gradlew quarkusDev
+
+# Terminal 2: Start frontend
+cd src/main/webui
+npm run dev
+```
+
+### Code Quality & Formatting
+
+This project uses automated code formatting and linting:
+
+**Pre-commit Hooks:**
+- Automatically format code before each commit
+- Run ESLint on JavaScript/Svelte files
+- Run Spotless on Java files
+
+**Manual Commands:**
+```bash
+# Format all code
+make format
+
+# Check formatting
+make format-check
+
+# Lint frontend code
+make lint
+
+# Fix linting issues
+make lint-fix
+```
+
+**Java Formatting:**
+- Uses Spotless with Google Java Format
+- Run: `./gradlew spotlessApply`
+
+**Frontend Formatting:**
+- Uses ESLint + Prettier
+- Configuration: `.eslintrc.cjs`, `.prettierrc`
+- Run: `cd src/main/webui && npm run format`
+
+### Makefile Commands
+
+For convenience, common tasks are available via `make`:
+
+```bash
+make help           # Show all available commands
+make dev            # Start development environment
+make test           # Run all tests
+make test-coverage  # Run tests with coverage
+make format         # Format all code
+make lint           # Lint frontend code
+make build          # Build the application
+make clean          # Clean build artifacts
+```
+
+See [Makefile](Makefile) for all available commands.
 
 ### Packaging and running the application
 

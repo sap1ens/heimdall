@@ -1,0 +1,30 @@
+{
+  "name": "heimdall",
+  "version": "0.10.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "prepare": "husky",
+    "lint": "cd src/main/webui && npm run lint",
+    "lint:fix": "cd src/main/webui && npm run lint:fix",
+    "format": "cd src/main/webui && npm run format",
+    "format:check": "cd src/main/webui && npm run format:check",
+    "format:java": "./gradlew spotlessApply",
+    "format:java:check": "./gradlew spotlessCheck"
+  },
+  "devDependencies": {
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.2"
+  },
+  "lint-staged": {
+    "src/main/webui/**/*.{js,svelte}": [
+      "bash -c 'cd src/main/webui && npx eslint --fix \"$0\"'"
+    ],
+    "src/main/webui/**/*.{js,svelte,json,css,md}": [
+      "bash -c 'cd src/main/webui && npx prettier --write \"$0\"'"
+    ],
+    "src/main/java/**/*.java": [
+      "./gradlew spotlessApply --no-daemon"
+    ]
+  }
+}
