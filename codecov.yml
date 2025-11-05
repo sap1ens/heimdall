@@ -1,0 +1,43 @@
+codecov:
+  require_ci_to_pass: no  # Don't fail if CI fails
+  notify:
+    wait_for_ci: no
+
+coverage:
+  status:
+    project:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true  # Don't fail the build
+    patch:
+      default:
+        target: auto
+        threshold: 1%
+        informational: true
+
+flags:
+  backend:
+    paths:
+      - src/main/java/
+    carryforward: true
+  frontend:
+    paths:
+      - src/main/webui/src/
+    carryforward: true
+
+comment:
+  layout: "reach,diff,flags,tree"
+  behavior: default
+  require_changes: false
+  require_base: false
+  require_head: false
+
+ignore:
+  - "src/test/"
+  - "src/main/webui/src/test/"
+  - "**/*.test.js"
+  - "**/*.spec.js"
+  - "**/node_modules/"
+  - "**/build/"
+  - "**/dist/"

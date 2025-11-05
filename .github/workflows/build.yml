@@ -51,6 +51,8 @@ jobs:
           flags: backend
           name: backend-coverage
           fail_ci_if_error: false
+          disable_search: true
+          verbose: true
 
       - name: Upload frontend coverage to Codecov
         uses: codecov/codecov-action@v4
@@ -60,6 +62,8 @@ jobs:
           flags: frontend
           name: frontend-coverage
           fail_ci_if_error: false
+          disable_search: true
+          verbose: true
 
       - name: Archive backend test results
         if: always()
