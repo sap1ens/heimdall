@@ -186,9 +186,11 @@ npm run format
 
 ### Backend Tests
 
-**Minimum Coverage**:
+**Target Coverage** (not enforced automatically):
 - Overall: 60%
 - Per class: 50%
+
+**Note**: JaCoCo coverage verification is disabled due to Quarkus bytecode augmentation incompatibility. Coverage reports are generated and should be reviewed manually. Please ensure your changes maintain or improve test coverage.
 
 **Test Structure**:
 ```java
