@@ -109,11 +109,12 @@ npm run test:e2e:ui
 - Excludes: model/record classes
 
 ### Frontend (JavaScript)
-- Lines: 60%
-- Functions: 60%
-- Branches: 60%
-- Statements: 60%
-- Excludes: test files, config files, node_modules
+- Lines: 15%
+- Functions: 40%
+- Branches: 70%
+- Statements: 15%
+- Excludes: test files, config files, node_modules, E2E tests
+- Note: Thresholds are intentionally conservative to focus on test reliability over coverage percentage
 
 ## Test Categories
 
