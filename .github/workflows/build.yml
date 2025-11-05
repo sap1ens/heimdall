@@ -45,17 +45,21 @@ jobs:
 
       - name: Upload backend coverage to Codecov
         uses: codecov/codecov-action@v4
+        continue-on-error: true
         with:
           files: ./build/reports/jacoco/test/jacocoTestReport.xml
           flags: backend
           name: backend-coverage
+          fail_ci_if_error: false
 
       - name: Upload frontend coverage to Codecov
         uses: codecov/codecov-action@v4
+        continue-on-error: true
         with:
           files: ./src/main/webui/coverage/lcov.info
           flags: frontend
           name: frontend-coverage
+          fail_ci_if_error: false
 
       - name: Archive backend test results
         if: always()
