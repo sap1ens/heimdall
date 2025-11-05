@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { render } from '@testing-library/svelte';
+import { render } from '@testing-library/svelte/svelte5';
 import JobType from '../../lib/JobType.svelte';
 
 describe('JobType component', () => {
