@@ -30,8 +30,6 @@ Read more in the blog: [Heimdall: Making Operating Flink Deployments a Bit Easie
 - [Configuration](#configuration)
 - [Development](#development)
 - [Testing](#testing)
-- [Contributing](#contributing)
-- [Security](#security)
 - [Sponsors](#sponsors)
 
 ## Quick (and Dirty) Start
@@ -371,39 +369,6 @@ docker buildx build --platform linux/amd64,linux/arm64 \
 ```
 
 The Dockerfile uses the distroless base image for minimal size and security.
-
-## Contributing
-
-We welcome contributions! Please see our [Contributing Guide](CONTRIBUTING.md) for details on:
-
-- Code standards and style guides
-- Testing requirements
-- Pull request process
-- Commit message conventions
-- Development setup
-
-### Quick Contribution Checklist
-
-- [ ] Fork and clone the repository
-- [ ] Create a feature branch
-- [ ] Follow code style (enforced by pre-commit hooks)
-- [ ] Write tests for new features
-- [ ] Ensure all tests pass
-- [ ] Update documentation as needed
-- [ ] Submit a pull request
-
-Please also read our [Code of Conduct](CODE_OF_CONDUCT.md).
-
-## Security
-
-Security is important to us. Please see our [Security Policy](SECURITY.md) for:
-
-- Reporting vulnerabilities (privately)
-- Security best practices
-- Deployment security checklist
-- Known limitations and mitigations
-
-**⚠️ Important:** Do NOT report security vulnerabilities through public GitHub issues.
 
 ## Sponsors
 
