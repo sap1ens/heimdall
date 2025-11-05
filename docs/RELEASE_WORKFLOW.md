@@ -91,23 +91,16 @@ These are automatically provided by GitHub Actions using `GITHUB_TOKEN`.
 
 ## Version Management
 
-**Git-Based Versioning**: This project uses [axion-release-plugin](https://github.com/allegro/axion-release-plugin) for automatic version management based on git tags.
-
-**How it works:**
-- Version is automatically derived from the latest git tag
-- No manual version updates needed in `gradle.properties`
-- Tags are the single source of truth for versions
-
-**Version determination:**
-- **On a tag** (e.g., `v0.10.0`): Version is `0.10.0` (release)
-- **On main branch**: Version is `<latest-tag>-SNAPSHOT` (e.g., `0.10.0-SNAPSHOT`)
-- **On feature branches**: Version is `<latest-tag>-SNAPSHOT`
+The version is managed in `gradle.properties`:
+```properties
+version=0.10.0-SNAPSHOT
+```
 
 **For releases:**
-- Just create and push a tag (e.g., `v0.11.0`)
-- The version is automatically derived: `0.11.0`
-- No need to update any files manually
-- The next commit on main automatically becomes `0.11.0-SNAPSHOT`
+- Update the version in `gradle.properties` (e.g., `0.11.0-SNAPSHOT`)
+- Commit and push to main (this creates a snapshot release)
+- When ready for release, create a tag (e.g., `v0.11.0`)
+- The workflow strips the `-SNAPSHOT` suffix automatically
 
 ## Troubleshooting
 
@@ -126,47 +119,39 @@ These are automatically provided by GitHub Actions using `GITHUB_TOKEN`.
 - Verify the build completed successfully
 - Images may take a few moments to appear in the package registry
 
-### Version showing as "0.1.0-SNAPSHOT" unexpectedly
-- Ensure git tags are fetched: `git fetch --tags`
-- The version is based on the latest git tag in your repository
-- If no tags exist, axion-release defaults to `0.1.0`
-- Create an initial tag to set the version: `git tag v0.10.0 && git push origin v0.10.0`
-
 ### Check current version locally
 ```bash
-# See what version will be used
-./gradlew currentVersion
-
-# Or check project version
+# Check project version
 ./gradlew properties | grep "^version:"
 ```
 
 ## Example Release Process
 
-Here's a complete example of releasing version 0.11.0 with git-based versioning:
+Here's a complete example of releasing version 0.11.0:
 
 ```bash
-# 1. Make your changes and push to main
-git add .
-git commit -m "feat: add new feature"
-git push origin main
-# This automatically publishes: ghcr.io/<owner>/heimdall:0.10.0-SNAPSHOT
-# (Uses previous tag version with -SNAPSHOT)
+# 1. Update version in gradle.properties
+echo "version=0.11.0-SNAPSHOT" > gradle.properties
 
-# 2. When ready for release, create and push tag
+# 2. Commit and push to main (creates snapshot build)
+git add gradle.properties
+git commit -m "chore: bump version to 0.11.0-SNAPSHOT"
+git push origin main
+# This publishes: ghcr.io/<owner>/heimdall:0.11.0-SNAPSHOT
+
+# 3. When ready for release, create and push tag
 git tag v0.11.0
 git push origin v0.11.0
-# This automatically publishes:
+# This publishes:
 #   - ghcr.io/<owner>/heimdall:0.11.0
 #   - ghcr.io/<owner>/heimdall:latest
 
-# 3. Continue development on main
+# 4. Prepare for next development cycle
+echo "version=0.12.0-SNAPSHOT" > gradle.properties
+git add gradle.properties
+git commit -m "chore: bump version to 0.12.0-SNAPSHOT"
 git push origin main
-# This automatically publishes: ghcr.io/<owner>/heimdall:0.11.0-SNAPSHOT
-# (Uses the new tag version with -SNAPSHOT)
 ```
-
-**That's it!** No manual version updates needed. The git tag is the only version management step.
 
 ## GitHub Actions UI Summary
 
