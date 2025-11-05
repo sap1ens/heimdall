@@ -3,7 +3,7 @@ plugins {
     id 'io.quarkus'
     id "com.diffplug.spotless" version "6.19.0"
     id 'jacoco'
-    id 'pl.allegro.tech.build.axion-release' version '1.17.2'
+    id 'pl.allegro.tech.build.axion-release' version '1.18.2'
 }
 
 repositories {

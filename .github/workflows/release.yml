@@ -50,6 +50,16 @@ jobs:
         uses: gradle/actions/setup-gradle@v4
         with:
           gradle-version: '8.1.1'
+          cache-read-only: false
+          gradle-home-cache-cleanup: true
+
+      - name: Clean Gradle cache if corrupted
+        run: |
+          if [ -d "$HOME/.gradle/caches/jars-9" ]; then
+            echo "Cleaning potentially corrupted Gradle jar cache..."
+            rm -rf "$HOME/.gradle/caches/jars-9"
+          fi
+        continue-on-error: true
 
       - name: Set up QEMU for cross-platform builds
         uses: docker/setup-qemu-action@v3
