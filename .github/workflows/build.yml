@@ -11,7 +11,7 @@ jobs:
         working-directory: .
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Setup JDK
         uses: actions/setup-java@v4
@@ -25,5 +25,55 @@ jobs:
         with:
           gradle-version: '8.1.1'
 
-      - name: Build
-        run: gradle build
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+          cache-dependency-path: src/main/webui/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: src/main/webui
+        run: npm ci
+
+      - name: Run frontend unit tests
+        working-directory: src/main/webui
+        run: npm run test:coverage
+
+      - name: Build with Gradle (includes backend tests and coverage)
+        run: gradle build jacocoTestReport
+
+      - name: Upload backend coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./build/reports/jacoco/test/jacocoTestReport.xml
+          flags: backend
+          name: backend-coverage
+
+      - name: Upload frontend coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./src/main/webui/coverage/lcov.info
+          flags: frontend
+          name: frontend-coverage
+
+      - name: Archive backend test results
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-test-results
+          path: build/reports/tests/
+
+      - name: Archive backend coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: backend-coverage-report
+          path: build/reports/jacoco/
+
+      - name: Archive frontend coverage report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: frontend-coverage-report
+          path: src/main/webui/coverage/

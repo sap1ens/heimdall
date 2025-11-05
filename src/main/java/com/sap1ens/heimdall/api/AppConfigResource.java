@@ -1,6 +1,7 @@
 package com.sap1ens.heimdall.api;
 
 import com.sap1ens.heimdall.AppConfig;
+import io.quarkus.logging.Log;
 import jakarta.inject.Inject;
 import jakarta.ws.rs.GET;
 import jakarta.ws.rs.Path;
@@ -17,6 +18,7 @@ public class AppConfigResource {
 
   @GET
   public Map<String, Object> index() {
+    Log.debug("Received request for application config");
     // Only cherry-picking certain properties, don't need to show the whole config
     return Map.of(
         "appVersion", appVersion,

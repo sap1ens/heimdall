@@ -2,6 +2,7 @@ plugins {
     id 'java'
     id 'io.quarkus'
     id "com.diffplug.spotless" version "6.19.0"
+    id 'jacoco'
 }
 
 repositories {
@@ -36,7 +37,59 @@ java {
 
 test {
     systemProperty "java.util.logging.manager", "org.jboss.logmanager.LogManager"
+    finalizedBy jacocoTestReport
 }
+
+jacoco {
+    toolVersion = "0.8.11"
+}
+
+jacocoTestReport {
+    dependsOn test
+    reports {
+        xml.required = true
+        html.required = true
+        csv.required = false
+    }
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                '**/model/**',  // Exclude simple model/record classes
+                '**/kubernetes/**',  // Exclude K8s client wrappers (need real cluster to test)
+            ])
+        }))
+    }
+}
+
+jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                '**/model/**',  // Exclude simple model/record classes
+                '**/kubernetes/**',  // Exclude K8s client wrappers (need real cluster to test)
+            ])
+        }))
+    }
+    violationRules {
+        rule {
+            limit {
+                minimum = 0.60
+            }
+        }
+        rule {
+            element = 'CLASS'
+            limit {
+                minimum = 0.50
+            }
+        }
+    }
+}
+
+// Note: JaCoCo coverage verification disabled due to Quarkus test instrumentation issues
+// Coverage reports are still generated, but won't fail the build
+// See: https://github.com/quarkusio/quarkus/issues/3084
+// check.dependsOn jacocoTestCoverageVerification
+
 compileJava {
     options.encoding = 'UTF-8'
     options.compilerArgs << '-parameters'
