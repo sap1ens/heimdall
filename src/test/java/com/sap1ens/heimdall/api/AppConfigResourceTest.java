@@ -106,7 +106,11 @@ public class AppConfigResourceTest {
         .body("endpointPathPatterns.size()", is(4))
         .body("endpointPathPatterns.flink-ui", is("http://localhost/$jobName/ui"))
         .body("endpointPathPatterns.github-repo", is("https://github.com/org/$jobName"))
-        .body("endpointPathPatterns.grafana", is("https://grafana.example.com/d/dashboard?var-job=$jobName"))
-        .body("endpointPathPatterns.datadog", is("https://app.datadoghq.com/logs?query=service:$jobName"));
+        .body(
+            "endpointPathPatterns.grafana",
+            is("https://grafana.example.com/d/dashboard?var-job=$jobName"))
+        .body(
+            "endpointPathPatterns.datadog",
+            is("https://app.datadoghq.com/logs?query=service:$jobName"));
   }
 }
