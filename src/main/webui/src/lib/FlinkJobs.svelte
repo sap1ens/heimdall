@@ -57,8 +57,49 @@
     $: jobNamespaceList = [...new Set($flinkJobs.data.map(job => job.namespace))].sort();
 
     $: displayNamePattern = $appConfig?.patterns?.['display-name'];
+    $: endpointTypes = $appConfig?.endpointPathPatterns ? Object.keys($appConfig.endpointPathPatterns) : [];
 
     $: $settings.refreshInterval && flinkJobs.setInterval($settings.refreshInterval);
+
+    // Pagination logic
+    $: totalJobs = visibleFlinkJobs.length;
+    $: totalPages = Math.ceil(totalJobs / $settings.pageSize);
+    $: {
+        // Reset to page 1 if current page exceeds total pages (e.g., after filtering)
+        if ($settings.currentPage > totalPages && totalPages > 0) {
+            $settings.currentPage = 1;
+        }
+    }
+    $: startIndex = ($settings.currentPage - 1) * $settings.pageSize;
+    $: endIndex = Math.min(startIndex + $settings.pageSize, totalJobs);
+    $: paginatedFlinkJobs = visibleFlinkJobs.slice(startIndex, endIndex);
+
+    function goToPage(page) {
+        if (page >= 1 && page <= totalPages) {
+            $settings.currentPage = page;
+        }
+    }
+
+    function nextPage() {
+        if ($settings.currentPage < totalPages) {
+            $settings.currentPage++;
+        }
+    }
+
+    function prevPage() {
+        if ($settings.currentPage > 1) {
+            $settings.currentPage--;
+        }
+    }
+
+    function formatEndpointTitle(type) {
+        // Convert endpoint type to readable title
+        // e.g., "flink-ui" -> "Flink UI", "github-repo" -> "GitHub Repo"
+        return type
+            .split('-')
+            .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+            .join(' ');
+    }
 
     function statusColor(status) {
         switch(status) {
@@ -126,6 +167,17 @@
                 <option value="30">30 seconds</option>
                 <option value="60">1 minute</option>
                 <option value="300">5 minutes</option>
+            </select>
+        </div>
+        <div>
+            <label for="pageSize" class="block text-sm font-semibold text-gray-700 mb-2">Jobs Per Page</label>
+            <select id="pageSize" name="pageSize" bind:value={$settings.pageSize}
+                    class="w-full input-modern">
+                <option value={10}>10 jobs</option>
+                <option value={20}>20 jobs</option>
+                <option value={50}>50 jobs</option>
+                <option value={100}>100 jobs</option>
+                <option value={999999}>Show all</option>
             </select>
         </div>
         <div>
@@ -201,7 +253,7 @@
         <p class="text-red-600 mt-2">{$flinkJobs.error}</p>
     </div>
 {:else}
-    {#if visibleFlinkJobs.length > 0 || jobNameFilter || statusFilter}
+    {#if totalJobs > 0 || jobNameFilter || statusFilter}
         {#if $settings.displayMode === 'tabular'}
             <table class="table-auto w-full border">
                 <thead class="text-lg">
@@ -319,7 +371,7 @@
                 </tr>
                 </thead>
                 <tbody class="text-base">
-                {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
+                {#each paginatedFlinkJobs as flinkJob (flinkJob.id)}
                     <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100">
                         <td class="p-4">
                             <div class="flex items-start justify-between text-lg">
@@ -367,14 +419,9 @@
                             <span class="text-gray-600 text-sm">{formatStartTime(flinkJob.startTime)}</span>
                         </td>
                         <td class="p-4">
-                            <p>
-                                <ExternalEndpoint type="flink-ui" title="Flink UI" jobName="{flinkJob.name}" />
-                                <ExternalEndpoint type="flink-api" title="Flink API" jobName="{flinkJob.name}" />
-                            </p>
-                            <p>
-                                <ExternalEndpoint type="metrics" title="Metrics" jobName="{flinkJob.name}" />
-                                <ExternalEndpoint type="logs" title="Logs" jobName="{flinkJob.name}" />
-                            </p>
+                            {#each endpointTypes as endpointType}
+                                <ExternalEndpoint type="{endpointType}" title="{formatEndpointTitle(endpointType)}" jobName="{flinkJob.name}" />
+                            {/each}
                         </td>
                     </tr>
                 {/each}
@@ -382,7 +429,7 @@
             </table>
         {:else}
             <div class="grid gap-6 grid-cols-3">
-            {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
+            {#each paginatedFlinkJobs as flinkJob (flinkJob.id)}
                 <div class="border border-slate-300 p-2">
                     <div class="flex items-start justify-between pb-4 text-lg">
                         <div>
@@ -418,13 +465,65 @@
                         {/if}
                     </div>
                     <p>
-                        <ExternalEndpoint type="flink-ui" title="Flink UI" jobName="{flinkJob.name}" />
-                        <ExternalEndpoint type="flink-api" title="Flink API" jobName="{flinkJob.name}" />
-                        <ExternalEndpoint type="metrics" title="Metrics" jobName="{flinkJob.name}" />
-                        <ExternalEndpoint type="logs" title="Logs" jobName="{flinkJob.name}" />
+                        {#each endpointTypes as endpointType}
+                            <ExternalEndpoint type="{endpointType}" title="{formatEndpointTitle(endpointType)}" jobName="{flinkJob.name}" />
+                        {/each}
                     </p>
                 </div>
             {/each}
+            </div>
+        {/if}
+
+        <!-- Pagination Controls -->
+        {#if totalPages > 1}
+            <div class="flex items-center justify-between mt-6 px-4 py-3 border-t border-gray-200">
+                <div class="text-sm text-gray-700">
+                    Showing <span class="font-semibold">{startIndex + 1}</span> to <span class="font-semibold">{endIndex}</span> of <span class="font-semibold">{totalJobs}</span> jobs
+                </div>
+                <div class="flex items-center gap-2">
+                    <button
+                        type="button"
+                        on:click={prevPage}
+                        disabled={$settings.currentPage === 1}
+                        class="px-3 py-1 text-sm font-medium rounded-md border transition-colors
+                               {$settings.currentPage === 1
+                                   ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                   : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}"
+                    >
+                        Previous
+                    </button>
+
+                    <div class="flex items-center gap-1">
+                        {#each Array.from({length: totalPages}, (_, i) => i + 1) as page}
+                            {#if page === 1 || page === totalPages || (page >= $settings.currentPage - 1 && page <= $settings.currentPage + 1)}
+                                <button
+                                    type="button"
+                                    on:click={() => goToPage(page)}
+                                    class="w-8 h-8 text-sm font-medium rounded-md transition-colors
+                                           {page === $settings.currentPage
+                                               ? 'bg-primary-600 text-white'
+                                               : 'bg-white text-gray-700 border border-gray-300 hover:bg-gray-50'}"
+                                >
+                                    {page}
+                                </button>
+                            {:else if page === $settings.currentPage - 2 || page === $settings.currentPage + 2}
+                                <span class="text-gray-400">...</span>
+                            {/if}
+                        {/each}
+                    </div>
+
+                    <button
+                        type="button"
+                        on:click={nextPage}
+                        disabled={$settings.currentPage === totalPages}
+                        class="px-3 py-1 text-sm font-medium rounded-md border transition-colors
+                               {$settings.currentPage === totalPages
+                                   ? 'bg-gray-100 text-gray-400 border-gray-200 cursor-not-allowed'
+                                   : 'bg-white text-gray-700 border-gray-300 hover:bg-gray-50'}"
+                    >
+                        Next
+                    </button>
+                </div>
             </div>
         {/if}
     {:else if $flinkJobs.loaded}

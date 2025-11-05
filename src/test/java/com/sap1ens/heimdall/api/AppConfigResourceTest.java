@@ -86,4 +86,31 @@ public class AppConfigResourceTest {
 
     given().when().get("/config").then().statusCode(200).contentType("application/json");
   }
+
+  @Test
+  public void testConfigWithCustomEndpoints() {
+    Mockito.when(appConfig.patterns()).thenReturn(Map.of("display-name", "$jobName"));
+    Mockito.when(appConfig.endpointPathPatterns())
+        .thenReturn(
+            Map.of(
+                "flink-ui", "http://localhost/$jobName/ui",
+                "github-repo", "https://github.com/org/$jobName",
+                "grafana", "https://grafana.example.com/d/dashboard?var-job=$jobName",
+                "datadog", "https://app.datadoghq.com/logs?query=service:$jobName"));
+
+    given()
+        .when()
+        .get("/config")
+        .then()
+        .statusCode(200)
+        .body("endpointPathPatterns.size()", is(4))
+        .body("endpointPathPatterns.flink-ui", is("http://localhost/$jobName/ui"))
+        .body("endpointPathPatterns.github-repo", is("https://github.com/org/$jobName"))
+        .body(
+            "endpointPathPatterns.grafana",
+            is("https://grafana.example.com/d/dashboard?var-job=$jobName"))
+        .body(
+            "endpointPathPatterns.datadog",
+            is("https://app.datadoghq.com/logs?query=service:$jobName"));
+  }
 }

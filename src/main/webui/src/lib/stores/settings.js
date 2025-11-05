@@ -5,7 +5,9 @@ const defaults = {
     'displayMode': 'tabular',
     'showJobParallelism': true,
     'showJobFlinkVersion': true,
-    'showJobImage': true
+    'showJobImage': true,
+    'pageSize': 20, // Number of jobs to display per page
+    'currentPage': 1 // Current page number (1-indexed)
 };
 const stored = JSON.parse(localStorage.getItem('heimdall_settings'));
 
