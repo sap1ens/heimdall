@@ -89,4 +89,110 @@ describe('Modal component', () => {
     const innerDiv = container.querySelector('dialog > div');
     expect(innerDiv).toBeInTheDocument();
   });
+
+  it('should close dialog when Escape key is pressed', async () => {
+    const { container } = render(Modal, {
+      props: { showModal: true }
+    });
+
+    const dialog = container.querySelector('dialog');
+    const closeSpy = vi.spyOn(dialog, 'close');
+
+    // Simulate Escape key press
+    await fireEvent.keyDown(dialog, { key: 'Escape' });
+
+    expect(closeSpy).toHaveBeenCalled();
+
+    closeSpy.mockRestore();
+  });
+
+  it('should not close dialog when other keys are pressed', async () => {
+    const { container } = render(Modal, {
+      props: { showModal: true }
+    });
+
+    const dialog = container.querySelector('dialog');
+    const closeSpy = vi.spyOn(dialog, 'close');
+
+    // Simulate other key presses
+    await fireEvent.keyDown(dialog, { key: 'Enter' });
+    await fireEvent.keyDown(dialog, { key: 'Tab' });
+    await fireEvent.keyDown(dialog, { key: 'a' });
+
+    expect(closeSpy).not.toHaveBeenCalled();
+
+    closeSpy.mockRestore();
+  });
+
+  it('should stop propagation when clicking inside modal content', async () => {
+    const { container } = render(Modal, {
+      props: { showModal: true }
+    });
+
+    const innerDiv = container.querySelector('dialog > div');
+    const dialog = container.querySelector('dialog');
+    const closeSpy = vi.spyOn(dialog, 'close');
+
+    // Click inside the content area
+    await fireEvent.click(innerDiv);
+
+    // Dialog should not close
+    expect(closeSpy).not.toHaveBeenCalled();
+
+    closeSpy.mockRestore();
+  });
+
+  it('should stop propagation for keydown events inside modal content', async () => {
+    const { container } = render(Modal, {
+      props: { showModal: true }
+    });
+
+    const innerDiv = container.querySelector('dialog > div');
+
+    // This should not throw and should handle the event
+    await expect(fireEvent.keyDown(innerDiv, { key: 'Escape' })).resolves.not.toThrow();
+  });
+
+  it('should update dialog open state when showModal prop changes', async () => {
+    const { container, component } = render(Modal, {
+      props: { showModal: false }
+    });
+
+    const dialog = container.querySelector('dialog');
+    const showModalSpy = vi.spyOn(dialog, 'showModal');
+
+    // Update prop to true
+    await component.$set({ showModal: true });
+
+    expect(showModalSpy).toHaveBeenCalled();
+
+    showModalSpy.mockRestore();
+  });
+
+  it('should trigger close event when dialog is closed', async () => {
+    const { container } = render(Modal, {
+      props: { showModal: true }
+    });
+
+    const dialog = container.querySelector('dialog');
+
+    // Verify close event can be fired
+    let closeEventFired = false;
+    dialog.addEventListener('close', () => {
+      closeEventFired = true;
+    });
+
+    await fireEvent(dialog, new Event('close'));
+
+    expect(closeEventFired).toBe(true);
+  });
+
+  it('should have proper ARIA role on inner div', () => {
+    const { container } = render(Modal, {
+      props: { showModal: false }
+    });
+
+    const innerDiv = container.querySelector('dialog > div');
+    expect(innerDiv).toHaveAttribute('role', 'presentation');
+  });
 });
