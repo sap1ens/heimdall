@@ -180,18 +180,18 @@
     </div>
     <div class="flex items-center gap-2">
         {#if $settings.displayMode === 'card'}
-        <span title="Table view" on:click={() => $settings.displayMode = 'tabular'} class="inline-block cursor-pointer">
+        <button type="button" title="Table view" on:click={() => $settings.displayMode = 'tabular'} class="inline-block cursor-pointer bg-transparent border-0 p-0 m-0">
             <Fa fw icon={faTable} size="2x" class="text-gray-500 hover:text-gray-700" />
-        </span>
+        </button>
         {/if}
         {#if $settings.displayMode === 'tabular'}
-        <span title="Card view" on:click={() => $settings.displayMode = 'card'} class="inline-block cursor-pointer">
+        <button type="button" title="Card view" on:click={() => $settings.displayMode = 'card'} class="inline-block cursor-pointer bg-transparent border-0 p-0 m-0">
             <Fa fw icon={faIdCard} size="2x" class="text-gray-500 hover:text-gray-700" />
-        </span>
+        </button>
         {/if}
-        <span title="Settings" on:click={() => showSettingsModal = true} class="inline-block cursor-pointer ml-1">
+        <button type="button" title="Settings" on:click={() => showSettingsModal = true} class="inline-block cursor-pointer ml-1 bg-transparent border-0 p-0 m-0">
             <Fa fw icon={faGear} size="2x" class="text-gray-500 hover:text-gray-700" />
-        </span>
+        </button>
     </div>
 </div>
 
