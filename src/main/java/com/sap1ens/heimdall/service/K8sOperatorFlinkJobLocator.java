@@ -34,7 +34,8 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
     Log.debugf("Searching for Flink deployments in namespaces: %s", namespaces);
 
     var flinkDeployments = flinkDeploymentClient.find(namespaces);
-    Log.infof("Found %d Flink deployment(s) in namespaces: %s", flinkDeployments.size(), namespaces);
+    Log.infof(
+        "Found %d Flink deployment(s) in namespaces: %s", flinkDeployments.size(), namespaces);
 
     return flinkDeployments.stream().map(this::toFlinkJob).collect(Collectors.toList());
   }
@@ -109,8 +110,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
 
     if (jobSpecParallelism != 0) {
       parallelism = jobSpecParallelism;
-      Log.debugf(
-          "Using job spec parallelism %d for deployment '%s'", parallelism, deploymentName);
+      Log.debugf("Using job spec parallelism %d for deployment '%s'", parallelism, deploymentName);
     } else {
       // If parallelism is not set in the job spec, try to calculate it based on the number of
       // task manager replicas and configured task slots.
