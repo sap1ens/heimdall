@@ -106,7 +106,8 @@ npm run test:e2e:ui
 ### Backend (Java)
 - Minimum overall coverage: 60%
 - Minimum class coverage: 50%
-- Excludes: model/record classes
+- Excludes: model/record classes, kubernetes client wrappers
+- Note: Infrastructure code requiring real Kubernetes clusters is excluded and should be tested via integration tests
 
 ### Frontend (JavaScript)
 - Lines: 15%

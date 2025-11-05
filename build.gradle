@@ -55,12 +55,21 @@ jacocoTestReport {
         classDirectories.setFrom(files(classDirectories.files.collect {
             fileTree(dir: it, exclude: [
                 '**/model/**',  // Exclude simple model/record classes
+                '**/kubernetes/**',  // Exclude K8s client wrappers (need real cluster to test)
             ])
         }))
     }
 }
 
 jacocoTestCoverageVerification {
+    afterEvaluate {
+        classDirectories.setFrom(files(classDirectories.files.collect {
+            fileTree(dir: it, exclude: [
+                '**/model/**',  // Exclude simple model/record classes
+                '**/kubernetes/**',  // Exclude K8s client wrappers (need real cluster to test)
+            ])
+        }))
+    }
     violationRules {
         rule {
             limit {
