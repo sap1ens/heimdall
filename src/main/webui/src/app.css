@@ -8,8 +8,20 @@ body {
     font-variant: tabular-nums;
     line-height: 1.5715;
     font-feature-settings: "tnum","tnum";
+    background: #f5f5f5;
+    min-height: 100vh;
 }
 
 svg {
     display: inline;
+}
+
+@layer components {
+    .card {
+        @apply bg-white rounded shadow hover:shadow-md transition-shadow duration-200;
+    }
+
+    .input-modern {
+        @apply border-gray-300 rounded shadow-sm focus:border-primary-500 focus:ring-1 focus:ring-primary-500;
+    }
 }

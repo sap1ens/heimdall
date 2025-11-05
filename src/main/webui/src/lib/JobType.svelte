@@ -2,10 +2,12 @@
     export let type;
 </script>
 
-<p class="ml-1 px-1 border border-gray-500 rounded bg-white" title="Type: {type}">
-    {#if type === 'APPLICATION'}
-        A
-    {:else if type === 'SESSION'}
-        S
-    {/if}
-</p>
+{#if type === 'APPLICATION'}
+    <span class="px-2 py-1 rounded text-xs font-semibold bg-blue-100 text-blue-800 border border-blue-300" title="Application Job">
+        APP
+    </span>
+{:else if type === 'SESSION'}
+    <span class="px-2 py-1 rounded text-xs font-semibold bg-purple-100 text-purple-800 border border-purple-300" title="Session Job">
+        SESSION
+    </span>
+{/if}

@@ -14,6 +14,21 @@ export default defineConfig({
       // for testing standalone
       // protocol: 'ws',
       host: '127.0.0.1',
+    },
+    // Proxy API requests to mock server or backend
+    proxy: {
+      '/jobs': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/config': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      },
+      '/health': {
+        target: 'http://localhost:8080',
+        changeOrigin: true,
+      }
     }
   }
 })

@@ -63,14 +63,14 @@
     function statusColor(status) {
         switch(status) {
             case 'RUNNING':
-                return 'green';
+                return 'emerald';
             case 'FAILED':
-                return 'red';
+                return 'rose';
             case 'FINISHED':
             case 'UNKNOWN':
-                return 'gray';
+                return 'slate';
             default:
-                return 'yellow';
+                return 'amber';
         }
     }
 
@@ -116,77 +116,90 @@
 </script>
 
 <Modal bind:showModal={showSettingsModal}>
-    <div>
-        Refresh interval:
-        <select name="refreshInterval" bind:value={$settings.refreshInterval} class="ml-2">
-            <option value="-1">No refresh</option>
-            <option value="10">10 sec</option>
-            <option value="30">30 sec</option>
-            <option value="60">60 sec</option>
-            <option value="300">5 min</option>
-        </select>
-    </div>
-    <div class="mt-2.5">
-        Display details:
-        <div class="mt-1">
-            <div>
-                <label>
-                    <input name="showJobParallelism" type="checkbox" bind:checked={$settings.showJobParallelism} /> Parallelism
+    <div class="space-y-4">
+        <div>
+            <label for="refreshInterval" class="block text-sm font-semibold text-gray-700 mb-2">Refresh Interval</label>
+            <select id="refreshInterval" name="refreshInterval" bind:value={$settings.refreshInterval}
+                    class="w-full input-modern">
+                <option value="-1">No refresh</option>
+                <option value="10">10 seconds</option>
+                <option value="30">30 seconds</option>
+                <option value="60">1 minute</option>
+                <option value="300">5 minutes</option>
+            </select>
+        </div>
+        <div>
+            <p class="block text-sm font-semibold text-gray-700 mb-3">Display Details</p>
+            <div class="space-y-2">
+                <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                    <input name="showJobParallelism" type="checkbox" bind:checked={$settings.showJobParallelism}
+                           class="w-4 h-4 text-primary-600 rounded focus:ring-primary-500" />
+                    <span class="text-sm text-gray-700">Show Parallelism</span>
                 </label>
-            </div>
-            <div>
-                <label>
-                    <input name="showJobFlinkVersion" type="checkbox" bind:checked={$settings.showJobFlinkVersion} /> Flink version
+                <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                    <input name="showJobFlinkVersion" type="checkbox" bind:checked={$settings.showJobFlinkVersion}
+                           class="w-4 h-4 text-primary-600 rounded focus:ring-primary-500" />
+                    <span class="text-sm text-gray-700">Show Flink Version</span>
                 </label>
-            </div>
-            <div>
-                <label>
-                    <input name="showJobImage" type="checkbox" bind:checked={$settings.showJobImage} /> Image
+                <label class="flex items-center gap-3 p-3 rounded-lg hover:bg-gray-50 transition-colors cursor-pointer">
+                    <input name="showJobImage" type="checkbox" bind:checked={$settings.showJobImage}
+                           class="w-4 h-4 text-primary-600 rounded focus:ring-primary-500" />
+                    <span class="text-sm text-gray-700">Show Image</span>
                 </label>
             </div>
         </div>
     </div>
 </Modal>
-<div class="flex items-center justify-between py-6 text-base">
-    <div>
-        Filter by name:
-        <input name="jobNameFilter" type="text" placeholder="Flink Job name" bind:value={jobNameFilter}>
-        &nbsp;
-        Filter by status
-        <select name="statusFilter" bind:value={statusFilter}>
-            <option value="">Show all</option>
-            {#each jobStatusList as status}
-                <option value="{status}">{status}</option>
-            {/each}
-        </select>
-        &nbsp;
-        Filter by namespace
-        <select name="namespaceFilter" bind:value={namespaceFilter}>
-            <option value="">Show all</option>
-            {#each jobNamespaceList as namespace}
-                <option value="{namespace}">{namespace}</option>
-            {/each}
-        </select>
+<div class="flex items-center justify-between py-4 text-base flex-wrap gap-4">
+    <div class="flex items-center gap-3 flex-wrap">
+        <div>
+            <label for="jobNameFilter" class="text-sm font-medium text-gray-700 mr-2">Filter by name:</label>
+            <input id="jobNameFilter" name="jobNameFilter" type="text" placeholder="Flink Job name" bind:value={jobNameFilter}
+                   class="input-modern">
+        </div>
+        <div>
+            <label for="statusFilter" class="text-sm font-medium text-gray-700 mr-2">Status:</label>
+            <select id="statusFilter" name="statusFilter" bind:value={statusFilter}
+                    class="input-modern">
+                <option value="">Show all</option>
+                {#each jobStatusList as status}
+                    <option value="{status}">{status}</option>
+                {/each}
+            </select>
+        </div>
+        <div>
+            <label for="namespaceFilter" class="text-sm font-medium text-gray-700 mr-2">Namespace:</label>
+            <select id="namespaceFilter" name="namespaceFilter" bind:value={namespaceFilter}
+                    class="input-modern">
+                <option value="">Show all</option>
+                {#each jobNamespaceList as namespace}
+                    <option value="{namespace}">{namespace}</option>
+                {/each}
+            </select>
+        </div>
     </div>
-    <div>
+    <div class="flex items-center gap-2">
         {#if $settings.displayMode === 'card'}
-        <span title="Table view" on:click={() => $settings.displayMode = 'tabular'} class="inline-block">
-            <Fa fw icon={faTable} size="2x" class="text-gray-500 hover:cursor-pointer" />
-        </span>
+        <button type="button" title="Table view" on:click={() => $settings.displayMode = 'tabular'} class="inline-block cursor-pointer bg-transparent border-0 p-0 m-0">
+            <Fa fw icon={faTable} size="2x" class="text-gray-500 hover:text-gray-700" />
+        </button>
         {/if}
         {#if $settings.displayMode === 'tabular'}
-        <span title="Card view" on:click={() => $settings.displayMode = 'card'} class="inline-block">
-            <Fa fw icon={faIdCard} size="2x" class="text-gray-500 hover:cursor-pointer" />
-        </span>
+        <button type="button" title="Card view" on:click={() => $settings.displayMode = 'card'} class="inline-block cursor-pointer bg-transparent border-0 p-0 m-0">
+            <Fa fw icon={faIdCard} size="2x" class="text-gray-500 hover:text-gray-700" />
+        </button>
         {/if}
-        <span title="Settings" on:click={() => showSettingsModal = true} class="inline-block">
-            <Fa fw icon={faGear} size="2x" class="text-gray-500 hover:cursor-pointer ml-1" />
-        </span>
+        <button type="button" title="Settings" on:click={() => showSettingsModal = true} class="inline-block cursor-pointer ml-1 bg-transparent border-0 p-0 m-0">
+            <Fa fw icon={faGear} size="2x" class="text-gray-500 hover:text-gray-700" />
+        </button>
     </div>
 </div>
 
 {#if $flinkJobs.error}
-    <p class="text-xl text-center text-red-500 font-bold">Couldn't load data: {$flinkJobs.error}</p>
+    <div class="bg-red-50 border-l-4 border-red-500 rounded-lg p-6 mt-6 shadow-md">
+        <p class="text-xl text-red-700 font-semibold">⚠️ Error Loading Data</p>
+        <p class="text-red-600 mt-2">{$flinkJobs.error}</p>
+    </div>
 {:else}
     {#if visibleFlinkJobs.length > 0 || jobNameFilter || statusFilter}
         {#if $settings.displayMode === 'tabular'}
@@ -194,89 +207,121 @@
                 <thead class="text-lg">
                 <tr class="bg-slate-50">
                     <th class="border border-slate-300 p-2 w-3/12">
-                        <div class="flex items-center justify-center">
+                        <div class="flex items-center justify-center font-semibold text-gray-700">
                             Flink Job
                             <div class="flex flex-col ml-2">
                                 <div
-                                        class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by job name ascending"
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1 transition-colors"
                                         on:click={() => activeSorting = 'jobNameAsc'}
-                                        class:border-b-black={activeSorting !== 'jobNameAsc'}
-                                        class:border-b-[#e6516f]={activeSorting === 'jobNameAsc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'jobNameAsc')}
+                                        class:border-b-gray-400={activeSorting !== 'jobNameAsc'}
+                                        class:border-b-primary-600={activeSorting === 'jobNameAsc'}
                                 ></div>
                                 <div
-                                        class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by job name descending"
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer transition-colors"
                                         on:click={() => activeSorting = 'jobNameDesc'}
-                                        class:border-t-black={activeSorting !== 'jobNameDesc'}
-                                        class:border-t-[#e6516f]={activeSorting === 'jobNameDesc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'jobNameDesc')}
+                                        class:border-t-gray-400={activeSorting !== 'jobNameDesc'}
+                                        class:border-t-primary-600={activeSorting === 'jobNameDesc'}
                                 ></div>
                             </div>
                         </div>
                     </th>
-                    <th class="border border-slate-300 p-2 w-1/12">
-                        <div class="flex items-center justify-center">
+                    <th class="border-b-2 border-gray-200 p-4 w-1/12">
+                        <div class="flex items-center justify-center font-semibold text-gray-700">
                             Namespace
                             <div class="flex flex-col ml-2">
                                 <div
-                                        class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by namespace ascending"
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1 transition-colors"
                                         on:click={() => activeSorting = 'namespaceAsc'}
-                                        class:border-b-black={activeSorting !== 'namespaceAsc'}
-                                        class:border-b-[#e6516f]={activeSorting === 'namespaceAsc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'namespaceAsc')}
+                                        class:border-b-gray-400={activeSorting !== 'namespaceAsc'}
+                                        class:border-b-primary-600={activeSorting === 'namespaceAsc'}
                                 ></div>
                                 <div
-                                        class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by namespace descending"
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer transition-colors"
                                         on:click={() => activeSorting = 'namespaceDesc'}
-                                        class:border-t-black={activeSorting !== 'namespaceDesc'}
-                                        class:border-t-[#e6516f]={activeSorting === 'namespaceDesc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'namespaceDesc')}
+                                        class:border-t-gray-400={activeSorting !== 'namespaceDesc'}
+                                        class:border-t-primary-600={activeSorting === 'namespaceDesc'}
                                 ></div>
                             </div>
                         </div>
                     </th>
-                    <th class="border border-slate-300 p-2 w-1/12">Status</th>
-                    <th class="border border-slate-300 p-2 w-3/12">
-                        <div class="flex items-center justify-center">
+                    <th class="border-b-2 border-gray-200 p-4 w-1/12 font-semibold text-gray-700">Status</th>
+                    <th class="border-b-2 border-gray-200 p-4 w-3/12">
+                        <div class="flex items-center justify-center font-semibold text-gray-700">
                             Resources
                             <div class="flex flex-col ml-2">
                                 <div
-                                        class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] border-b-black hover:cursor-pointer mb-1"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by resources ascending"
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1 transition-colors"
                                         on:click={() => activeSorting = 'resourcesAsc'}
-                                        class:border-b-black={activeSorting !== 'resourcesAsc'}
-                                        class:border-b-[#e6516f]={activeSorting === 'resourcesAsc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'resourcesAsc')}
+                                        class:border-b-gray-400={activeSorting !== 'resourcesAsc'}
+                                        class:border-b-primary-600={activeSorting === 'resourcesAsc'}
                                 ></div>
                                 <div
-                                        class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] border-t-black hover:cursor-pointer"
+                                        role="button"
+                                        tabindex="0"
+                                        aria-label="Sort by resources descending"
+                                        class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer transition-colors"
                                         on:click={() => activeSorting = 'resourcesDesc'}
-                                        class:border-t-black={activeSorting !== 'resourcesDesc'}
-                                        class:border-t-[#e6516f]={activeSorting === 'resourcesDesc'}
+                                        on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'resourcesDesc')}
+                                        class:border-t-gray-400={activeSorting !== 'resourcesDesc'}
+                                        class:border-t-primary-600={activeSorting === 'resourcesDesc'}
                                 ></div>
                             </div>
                         </div>
                     </th>
-                    <th class="border border-slate-300 p-2 w-2/12">
-                        <div class="flex items-center justify-center">
+                    <th class="border-b-2 border-gray-200 p-4 w-2/12">
+                        <div class="flex items-center justify-center font-semibold text-gray-700">
                             Started At
                             <div class="flex flex-col ml-2">
                                 <div
-                                     class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] border-b-black hover:cursor-pointer mb-1"
+                                     role="button"
+                                     tabindex="0"
+                                     aria-label="Sort by start time ascending"
+                                     class="h-0 w-0 border-x-8 border-x-transparent border-b-[10px] hover:cursor-pointer mb-1 transition-colors"
                                      on:click={() => activeSorting = 'startTimeAsc'}
-                                     class:border-b-black={activeSorting !== 'startTimeAsc'}
-                                     class:border-b-[#e6516f]={activeSorting === 'startTimeAsc'}
+                                     on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'startTimeAsc')}
+                                     class:border-b-gray-400={activeSorting !== 'startTimeAsc'}
+                                     class:border-b-primary-600={activeSorting === 'startTimeAsc'}
                                 ></div>
                                 <div
-                                     class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] border-t-black hover:cursor-pointer"
+                                     role="button"
+                                     tabindex="0"
+                                     aria-label="Sort by start time descending"
+                                     class="h-0 w-0 border-x-8 border-x-transparent border-t-[10px] hover:cursor-pointer transition-colors"
                                      on:click={() => activeSorting = 'startTimeDesc'}
-                                     class:border-t-black={activeSorting !== 'startTimeDesc'}
-                                     class:border-t-[#e6516f]={activeSorting === 'startTimeDesc'}
+                                     on:keydown={(e) => (e.key === 'Enter' || e.key === ' ') && (activeSorting = 'startTimeDesc')}
+                                     class:border-t-gray-400={activeSorting !== 'startTimeDesc'}
+                                     class:border-t-primary-600={activeSorting === 'startTimeDesc'}
                                 ></div>
                             </div>
                         </div>
                     </th>
-                    <th class="border border-slate-300 p-2 w-2/12">Endpoints</th>
+                    <th class="border-b-2 border-gray-200 p-4 w-2/12 font-semibold text-gray-700">Endpoints</th>
                 </tr>
                 </thead>
                 <tbody class="text-base">
                 {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
-                    <tr class="odd:bg-white even:bg-slate-50">
-                        <td class="border border-slate-300 p-2">
+                    <tr class="hover:bg-gray-50 transition-colors border-b border-gray-100">
+                        <td class="p-4">
                             <div class="flex items-start justify-between text-lg">
                                 <div>
                                     <p>{displayName(flinkJob)}</p>
@@ -301,16 +346,16 @@
                                 </div>
                             </div>
                         </td>
-                        <td class="border border-slate-300 p-2">
+                        <td class="p-4">
                             <span class="bg-gray-100 text-gray-800 px-2 py-1 rounded text-sm font-mono">{flinkJob.namespace}</span>
                         </td>
-                        <td class="border border-slate-300 p-2">
+                        <td class="p-4">
                             <div class="flex items-center">
-                                <div class="mr-1.5 w-4 h-4 rounded-full bg-{statusColor(flinkJob.status)}-500"></div>
+                                <div class="mr-1.5 w-3 h-3 rounded-full bg-{statusColor(flinkJob.status)}-500"></div>
                                 {flinkJob.status}
                             </div>
                         </td>
-                        <td class="border border-slate-300 p-2">
+                        <td class="p-4">
                             <p>JobManager{#if flinkJob.resources.jm.replicas > 1}s{/if}:
                                 <strong>{flinkJob.resources.jm.replicas}</strong> x {flinkJob.resources.jm.cpu} cpu, {flinkJob.resources.jm.mem} memory</p>
                             {#if flinkJob.resources.tm.replicas > 0}
@@ -318,8 +363,10 @@
                                 <strong>{flinkJob.resources.tm.replicas}</strong> x {flinkJob.resources.tm.cpu} cpu, {flinkJob.resources.tm.mem} memory</p>
                             {/if}
                         </td>
-                        <td class="border border-slate-300 p-2">{formatStartTime(flinkJob.startTime)}</td>
-                        <td class="border border-slate-300 p-2">
+                        <td class="p-4">
+                            <span class="text-gray-600 text-sm">{formatStartTime(flinkJob.startTime)}</span>
+                        </td>
+                        <td class="p-4">
                             <p>
                                 <ExternalEndpoint type="flink-ui" title="Flink UI" jobName="{flinkJob.name}" />
                                 <ExternalEndpoint type="flink-api" title="Flink API" jobName="{flinkJob.name}" />
@@ -381,8 +428,16 @@
             </div>
         {/if}
     {:else if $flinkJobs.loaded}
-        <p class="text-xl text-center font-bold">No Flink Jobs found</p>
+        <div class="bg-white rounded-xl shadow-md p-12 mt-6 text-center">
+            <div class="text-6xl mb-4">📊</div>
+            <p class="text-2xl font-bold text-gray-700 mb-2">No Flink Jobs Found</p>
+            <p class="text-gray-500">There are no jobs matching your criteria</p>
+        </div>
     {:else}
-        <p class="text-xl text-center font-bold">Loading...</p>
+        <div class="bg-white rounded-xl shadow-md p-12 mt-6 text-center">
+            <div class="inline-block animate-spin text-6xl mb-4">⚙️</div>
+            <p class="text-2xl font-bold text-gray-700">Loading Jobs...</p>
+            <p class="text-gray-500 mt-2">Please wait while we fetch your data</p>
+        </div>
     {/if}
 {/if}

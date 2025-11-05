@@ -13,14 +13,15 @@
         bind:this={dialog}
         on:close={() => (showModal = false)}
         on:click|self={() => dialog.close()}
-        class="w-[500px] h-[200px] p-[25px] outline-none"
+        on:keydown={(e) => e.key === 'Escape' && dialog.close()}
+        class="w-[500px] min-h-[200px] p-[25px] outline-none rounded shadow-lg border border-gray-300"
 >
-    <div on:click|stopPropagation>
+    <div role="presentation" on:click|stopPropagation on:keydown|stopPropagation>
         <slot />
         <div class="absolute top-2 right-2">
-            <span title="Settings" on:click={() => dialog.close()} class="inline-block">
-                <Fa fw icon={faX} class="text-gray-500 hover:cursor-pointer" />
-            </span>
+            <button type="button" title="Close" on:click={() => dialog.close()} class="inline-block cursor-pointer bg-transparent border-0 p-0 m-0">
+                <Fa fw icon={faX} class="text-gray-500 hover:text-gray-700" />
+            </button>
         </div>
     </div>
 </dialog>
