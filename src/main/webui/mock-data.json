@@ -1,0 +1,370 @@
+{
+  "config": {
+    "appVersion": "0.10.0-dev",
+    "patterns": {
+      "display-name": "$jobName"
+    },
+    "endpointPathPatterns": {
+      "flink-ui": "http://localhost:8081/#/job/$jobName/overview",
+      "flink-api": "http://localhost:8081/jobs/$jobName",
+      "metrics": "http://localhost:9090/graph?g0.expr=flink_job{job='$jobName'}",
+      "logs": "http://localhost:3000/explore?query=$jobName"
+    }
+  },
+  "jobs": [
+    {
+      "id": "flink-job-1",
+      "name": "payment-processor",
+      "namespace": "production",
+      "status": "RUNNING",
+      "type": "APPLICATION",
+      "parallelism": 8,
+      "flinkVersion": "1.17.1",
+      "image": "ghcr.io/company/payment-processor:v2.3.1-flink1.17",
+      "shortImage": "payment-processor:v2.3.1",
+      "startTime": 1699564800000,
+      "metadata": {
+        "env": "production",
+        "team": "payments",
+        "owner": "alice@company.com",
+        "version": "v2.3.1"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        },
+        "tm": {
+          "replicas": 4,
+          "cpu": "2",
+          "mem": "4Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-2",
+      "name": "user-analytics",
+      "namespace": "production",
+      "status": "RUNNING",
+      "type": "SESSION",
+      "parallelism": 16,
+      "flinkVersion": "1.18.0",
+      "image": "apache/flink:1.18.0-scala_2.12-java11",
+      "shortImage": "flink:1.18.0",
+      "startTime": 1699478400000,
+      "metadata": {
+        "env": "production",
+        "team": "analytics",
+        "owner": "bob@company.com"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "2",
+          "mem": "4Gi"
+        },
+        "tm": {
+          "replicas": 8,
+          "cpu": "4",
+          "mem": "8Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-3",
+      "name": "fraud-detection",
+      "namespace": "production",
+      "status": "FAILED",
+      "type": "APPLICATION",
+      "parallelism": 4,
+      "flinkVersion": "1.17.1",
+      "image": "ghcr.io/company/fraud-detection:v1.2.0-flink1.17",
+      "shortImage": "fraud-detection:v1.2.0",
+      "startTime": 1699651200000,
+      "metadata": {
+        "env": "production",
+        "team": "security",
+        "owner": "charlie@company.com",
+        "alert": "true"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        },
+        "tm": {
+          "replicas": 2,
+          "cpu": "2",
+          "mem": "4Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-4",
+      "name": "recommendation-engine",
+      "namespace": "staging",
+      "status": "RUNNING",
+      "type": "APPLICATION",
+      "parallelism": 2,
+      "flinkVersion": "1.18.0",
+      "image": "ghcr.io/company/recommendation-engine:v3.0.0-rc1",
+      "shortImage": "recommendation-engine:v3.0.0-rc1",
+      "startTime": 1699737600000,
+      "metadata": {
+        "env": "staging",
+        "team": "ml-platform",
+        "owner": "david@company.com"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        },
+        "tm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-5",
+      "name": "etl-pipeline",
+      "namespace": "staging",
+      "status": "PENDING",
+      "type": "APPLICATION",
+      "parallelism": 4,
+      "flinkVersion": "1.17.1",
+      "image": "ghcr.io/company/etl-pipeline:v1.5.2",
+      "shortImage": "etl-pipeline:v1.5.2",
+      "startTime": null,
+      "metadata": {
+        "env": "staging",
+        "team": "data-eng",
+        "owner": "eve@company.com"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        },
+        "tm": {
+          "replicas": 2,
+          "cpu": "2",
+          "mem": "4Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-6",
+      "name": "clickstream-processor",
+      "namespace": "development",
+      "status": "RUNNING",
+      "type": "APPLICATION",
+      "parallelism": 1,
+      "flinkVersion": "1.18.0",
+      "image": "ghcr.io/company/clickstream-processor:latest",
+      "shortImage": "clickstream-processor:latest",
+      "startTime": 1699824000000,
+      "metadata": {
+        "env": "development",
+        "team": "analytics",
+        "owner": "frank@company.com"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "0.5",
+          "mem": "1Gi"
+        },
+        "tm": {
+          "replicas": 1,
+          "cpu": "0.5",
+          "mem": "1Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-7",
+      "name": "realtime-dashboard",
+      "namespace": "production",
+      "status": "RUNNING",
+      "type": "SESSION",
+      "parallelism": 12,
+      "flinkVersion": "1.17.1",
+      "image": "apache/flink:1.17.1-scala_2.12",
+      "shortImage": "flink:1.17.1",
+      "startTime": 1699392000000,
+      "metadata": {
+        "env": "production",
+        "team": "platform",
+        "owner": "grace@company.com",
+        "critical": "true"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 2,
+          "cpu": "2",
+          "mem": "4Gi"
+        },
+        "tm": {
+          "replicas": 6,
+          "cpu": "3",
+          "mem": "6Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-8",
+      "name": "inventory-sync",
+      "namespace": "production",
+      "status": "FINISHED",
+      "type": "APPLICATION",
+      "parallelism": 2,
+      "flinkVersion": "1.16.3",
+      "image": "ghcr.io/company/inventory-sync:v1.0.0",
+      "shortImage": "inventory-sync:v1.0.0",
+      "startTime": 1699305600000,
+      "metadata": {
+        "env": "production",
+        "team": "warehouse",
+        "owner": "henry@company.com",
+        "batch": "true"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        },
+        "tm": {
+          "replicas": 1,
+          "cpu": "2",
+          "mem": "4Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-9",
+      "name": "log-aggregator",
+      "namespace": "monitoring",
+      "status": "RUNNING",
+      "type": "APPLICATION",
+      "parallelism": 6,
+      "flinkVersion": "1.18.0",
+      "image": "ghcr.io/company/log-aggregator:v2.1.0",
+      "shortImage": "log-aggregator:v2.1.0",
+      "startTime": 1699651200000,
+      "metadata": {
+        "env": "production",
+        "team": "sre",
+        "owner": "irene@company.com"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        },
+        "tm": {
+          "replicas": 3,
+          "cpu": "2",
+          "mem": "4Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-10",
+      "name": "notification-service",
+      "namespace": "production",
+      "status": "UNKNOWN",
+      "type": "APPLICATION",
+      "parallelism": 4,
+      "flinkVersion": "1.17.1",
+      "image": "ghcr.io/company/notification-service:v1.3.0",
+      "shortImage": "notification-service:v1.3.0",
+      "startTime": 1699737600000,
+      "metadata": {
+        "env": "production",
+        "team": "communications",
+        "owner": "jack@company.com"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        },
+        "tm": {
+          "replicas": 2,
+          "cpu": "2",
+          "mem": "4Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-11",
+      "name": "data-quality-checker",
+      "namespace": "staging",
+      "status": "RUNNING",
+      "type": "APPLICATION",
+      "parallelism": 2,
+      "flinkVersion": "1.18.0",
+      "image": "ghcr.io/company/data-quality:v1.1.0",
+      "shortImage": "data-quality:v1.1.0",
+      "startTime": 1699910400000,
+      "metadata": {
+        "env": "staging",
+        "team": "data-eng",
+        "owner": "kate@company.com"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        },
+        "tm": {
+          "replicas": 1,
+          "cpu": "1",
+          "mem": "2Gi"
+        }
+      }
+    },
+    {
+      "id": "flink-job-12",
+      "name": "order-processor",
+      "namespace": "production",
+      "status": "RUNNING",
+      "type": "APPLICATION",
+      "parallelism": 10,
+      "flinkVersion": "1.17.1",
+      "image": "ghcr.io/company/order-processor:v4.2.1",
+      "shortImage": "order-processor:v4.2.1",
+      "startTime": 1699478400000,
+      "metadata": {
+        "env": "production",
+        "team": "commerce",
+        "owner": "liam@company.com",
+        "critical": "true",
+        "sla": "99.99"
+      },
+      "resources": {
+        "jm": {
+          "replicas": 2,
+          "cpu": "2",
+          "mem": "4Gi"
+        },
+        "tm": {
+          "replicas": 5,
+          "cpu": "4",
+          "mem": "8Gi"
+        }
+      }
+    }
+  ]
+}
