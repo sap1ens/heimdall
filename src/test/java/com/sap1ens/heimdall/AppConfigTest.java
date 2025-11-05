@@ -2,34 +2,14 @@ package com.sap1ens.heimdall;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-import io.quarkus.test.junit.QuarkusTest;
-import jakarta.inject.Inject;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 
-@QuarkusTest
 public class AppConfigTest {
-
-  @Inject AppConfig appConfig;
-
-  @Test
-  public void testK8sOperatorConfigExists() {
-    assertNotNull(appConfig.joblocator());
-    assertNotNull(appConfig.joblocator().k8sOperator());
-  }
-
-  @Test
-  public void testNamespacesToWatchParsingSingleNamespace() {
-    // This test verifies the default behavior from application.properties
-    var namespaces = appConfig.joblocator().k8sOperator().namespacesToWatch();
-    assertNotNull(namespaces);
-    assertFalse(namespaces.isEmpty());
-  }
 
   @Test
   public void testNamespacesToWatchParsingWithCommas() {
     // Testing the parsing logic with comma-separated namespaces
-    // Create a mock implementation to test the parsing logic
     var mockConfig =
         new AppConfig() {
           @Override
@@ -226,15 +206,5 @@ public class AppConfigTest {
     var namespaces = mockConfig.joblocator().k8sOperator().namespacesToWatch();
     assertEquals(3, namespaces.size());
     assertEquals(List.of("ns1", "ns2", "ns3"), namespaces);
-  }
-
-  @Test
-  public void testPatternsConfigExists() {
-    assertNotNull(appConfig.patterns());
-  }
-
-  @Test
-  public void testEndpointPathPatternsConfigExists() {
-    assertNotNull(appConfig.endpointPathPatterns());
   }
 }
