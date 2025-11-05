@@ -58,10 +58,7 @@ public class AppConfigResourceTest {
     Mockito.when(appConfig.patterns())
         .thenReturn(
             Map.of(
-                "display-name",
-                "$metadata.team/$jobName",
-                "description",
-                "$metadata.description"));
+                "display-name", "$metadata.team/$jobName", "description", "$metadata.description"));
     Mockito.when(appConfig.endpointPathPatterns())
         .thenReturn(
             Map.of(
@@ -77,7 +74,9 @@ public class AppConfigResourceTest {
         .body("patterns.size()", is(2))
         .body("endpointPathPatterns.size()", is(3))
         .body("patterns.display-name", is("$metadata.team/$jobName"))
-        .body("endpointPathPatterns.metrics", is("https://grafana.example.com/d/$metadata.dashboard_id"));
+        .body(
+            "endpointPathPatterns.metrics",
+            is("https://grafana.example.com/d/$metadata.dashboard_id"));
   }
 
   @Test
@@ -85,11 +84,6 @@ public class AppConfigResourceTest {
     Mockito.when(appConfig.patterns()).thenReturn(Map.of());
     Mockito.when(appConfig.endpointPathPatterns()).thenReturn(Map.of());
 
-    given()
-        .when()
-        .get("/config")
-        .then()
-        .statusCode(200)
-        .contentType("application/json");
+    given().when().get("/config").then().statusCode(200).contentType("application/json");
   }
 }
