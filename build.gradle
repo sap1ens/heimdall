@@ -3,7 +3,6 @@ plugins {
     id 'io.quarkus'
     id "com.diffplug.spotless" version "6.19.0"
     id 'jacoco'
-    id 'pl.allegro.tech.build.axion-release' version '1.18.2'
 }
 
 repositories {
@@ -30,35 +29,6 @@ dependencies {
 }
 
 group 'com.sap1ens'
-
-// Configure git-based versioning
-scmVersion {
-    tag {
-        prefix = 'v'
-        versionSeparator = ''
-    }
-
-    // Use -SNAPSHOT suffix for non-release builds
-    snapshotCreator = { version, position ->
-        "${version}-SNAPSHOT"
-    }
-
-    // For branches that are not tags, use snapshot version
-    versionCreator { version, position ->
-        if (position.branch == 'main' || position.branch.startsWith('claude/')) {
-            "${version}-SNAPSHOT"
-        } else {
-            version
-        }
-    }
-
-    checks {
-        uncommittedChanges = false
-        aheadOfRemote = false
-    }
-}
-
-project.version = scmVersion.version
 
 java {
     sourceCompatibility = JavaVersion.VERSION_17

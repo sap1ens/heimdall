@@ -30,23 +30,19 @@ jobs:
       contents: write
       packages: write
 
-    env:
-      GRADLE_USER_HOME: ${{ github.workspace }}/.gradle-home
-
     defaults:
       run:
         working-directory: .
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          fetch-depth: 0  # Fetch all history and tags for git-based versioning
 
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
           distribution: zulu
           java-version: 17
+          cache: gradle
 
       - name: Setup Gradle 8.1.1
         uses: gradle/actions/setup-gradle@v4
@@ -70,22 +66,34 @@ jobs:
         env:
           FULL_IMAGE_NAME: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         run: |
-          # With git-based versioning, axion-release plugin automatically determines version:
-          # - Tag pushes: uses tag version (e.g., v0.10.0 -> 0.10.0)
-          # - Main branch: uses latest tag + -SNAPSHOT (e.g., 0.10.0-SNAPSHOT)
-          # - Other branches: uses latest tag + -SNAPSHOT
           version=$(gradle properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
 
-          # For manual triggers with snapshot=false, strip -SNAPSHOT if present
-          if [ "${{ github.event_name }}" == "workflow_dispatch" ] && [ "${{ github.event.inputs.snapshot }}" != "true" ]; then
+          # Determine if this is a snapshot build
+          # - Tag pushes: always use release version (strip -SNAPSHOT)
+          # - Main branch pushes: always use snapshot version (keep -SNAPSHOT)
+          # - Manual workflow_dispatch: use the input parameter
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+              # Tag push - release version
               version="${version//-SNAPSHOT/}"
-              echo "Manual release build - stripped SNAPSHOT: $version"
+              echo "Tag push detected - using release version"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              # Main branch push - snapshot version
+              if [[ ! "$version" =~ -SNAPSHOT$ ]]; then
+                  version="${version}-SNAPSHOT"
+              fi
+              echo "Main branch push detected - using snapshot version"
+          elif [ "${{ github.event.inputs.snapshot }}" != "true" ]; then
+              # Manual trigger with snapshot=false
+              version="${version//-SNAPSHOT/}"
+              echo "Manual release build - using release version"
           else
-              echo "Using git-based version: $version"
+              # Manual trigger with snapshot=true
+              echo "Manual snapshot build - using snapshot version"
           fi
 
+          echo "Using version: $version"
           echo "heimdall_version=$version" >> "$GITHUB_ENV"
-          gradle build -i -Dquarkus.container-image.build=true -Dquarkus.container-image.image=$FULL_IMAGE_NAME:$version -Dquarkus.container-image.push=true
+          gradle build -i -Pversion=$version -Dquarkus.container-image.build=true -Dquarkus.container-image.image=$FULL_IMAGE_NAME:$version -Dquarkus.container-image.push=true
 
       - name: Tag and push additional Docker tags
         if: "!contains(env.heimdall_version, 'SNAPSHOT')"
