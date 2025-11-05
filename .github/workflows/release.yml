@@ -1,11 +1,23 @@
 name: release
 
 on:
+  # Manual trigger
   workflow_dispatch:
     inputs:
       snapshot:
         description: 'Use snapshot version?'
         required: true
+
+  # Automatic trigger on version tags (e.g., v0.10.0, 0.10.0)
+  push:
+    tags:
+      - 'v*'
+      - '[0-9]+.[0-9]+.[0-9]+'
+
+  # Automatic snapshot releases on main branch pushes
+  push:
+    branches:
+      - main
 
 env:
   REGISTRY: ghcr.io
@@ -55,12 +67,44 @@ jobs:
           FULL_IMAGE_NAME: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
         run: |
           version=$(gradle properties --no-daemon --console=plain -q | grep "^version:" | awk '{printf $2}')
-          if [ "${{ github.event.inputs.snapshot }}" != "true" ]; then
+
+          # Determine if this is a snapshot build
+          # - Tag pushes: always use release version (strip -SNAPSHOT)
+          # - Main branch pushes: always use snapshot version (keep -SNAPSHOT)
+          # - Manual workflow_dispatch: use the input parameter
+          if [[ "${{ github.ref }}" == refs/tags/* ]]; then
+              # Tag push - release version
               version="${version//-SNAPSHOT/}"
+              echo "Tag push detected - using release version"
+          elif [[ "${{ github.ref }}" == "refs/heads/main" ]]; then
+              # Main branch push - snapshot version
+              if [[ ! "$version" =~ -SNAPSHOT$ ]]; then
+                  version="${version}-SNAPSHOT"
+              fi
+              echo "Main branch push detected - using snapshot version"
+          elif [ "${{ github.event.inputs.snapshot }}" != "true" ]; then
+              # Manual trigger with snapshot=false
+              version="${version//-SNAPSHOT/}"
+              echo "Manual release build - using release version"
+          else
+              # Manual trigger with snapshot=true
+              echo "Manual snapshot build - using snapshot version"
           fi
+
           echo "Using version: $version"
           echo "heimdall_version=$version" >> "$GITHUB_ENV"
           gradle build -i -Pversion=$version -Dquarkus.container-image.build=true -Dquarkus.container-image.image=$FULL_IMAGE_NAME:$version -Dquarkus.container-image.push=true
+
+      - name: Tag and push additional Docker tags
+        if: "!contains(env.heimdall_version, 'SNAPSHOT')"
+        env:
+          FULL_IMAGE_NAME: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+        run: |
+          # Tag as 'latest' for release versions
+          docker pull $FULL_IMAGE_NAME:${{ env.heimdall_version }}
+          docker tag $FULL_IMAGE_NAME:${{ env.heimdall_version }} $FULL_IMAGE_NAME:latest
+          docker push $FULL_IMAGE_NAME:latest
+          echo "Tagged and pushed as 'latest'"
 
       - name: Git tag
         uses: rickstaa/action-create-tag@v1
@@ -68,3 +112,23 @@ jobs:
         with:
           tag: "${{ env.heimdall_version }}"
           tag_exists_error: false
+
+      - name: Create release summary
+        run: |
+          echo "## Release Summary 🚀" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "**Version:** \`${{ env.heimdall_version }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "**Registry:** \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}\`" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Docker Images Published" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.heimdall_version }}\`" >> $GITHUB_STEP_SUMMARY
+          if [[ ! "${{ env.heimdall_version }}" =~ SNAPSHOT ]]; then
+            echo "- \`${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest\`" >> $GITHUB_STEP_SUMMARY
+          fi
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "### Pull Command" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`bash" >> $GITHUB_STEP_SUMMARY
+          echo "docker pull ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ env.heimdall_version }}" >> $GITHUB_STEP_SUMMARY
+          echo "\`\`\`" >> $GITHUB_STEP_SUMMARY

@@ -30,6 +30,7 @@ Read more in the blog: [Heimdall: Making Operating Flink Deployments a Bit Easie
 - [Configuration](#configuration)
 - [Development](#development)
 - [Testing](#testing)
+- [Release Workflow](#release-workflow)
 - [Sponsors](#sponsors)
 
 ## Quick (and Dirty) Start
@@ -369,6 +370,33 @@ docker buildx build --platform linux/amd64,linux/arm64 \
 ```
 
 The Dockerfile uses the distroless base image for minimal size and security.
+
+## Release Workflow
+
+Heimdall uses an automated release workflow that publishes Docker images to GitHub Container Registry (ghcr.io) automatically.
+
+### Automatic Releases
+
+The workflow triggers automatically in two scenarios:
+
+1. **Version Tags** - Creates a release build when you push a version tag (e.g., `v0.10.0`)
+   ```bash
+   git tag v0.10.0
+   git push origin v0.10.0
+   ```
+   - Publishes: `ghcr.io/<owner>/heimdall:0.10.0` and `ghcr.io/<owner>/heimdall:latest`
+
+2. **Main Branch** - Creates a snapshot build when you push to main
+   ```bash
+   git push origin main
+   ```
+   - Publishes: `ghcr.io/<owner>/heimdall:0.10.0-SNAPSHOT`
+
+### Manual Releases
+
+You can also trigger releases manually from GitHub Actions → release workflow.
+
+For detailed information about the release process, version management, and troubleshooting, see [Release Workflow Documentation](docs/RELEASE_WORKFLOW.md).
 
 ## Sponsors
 
