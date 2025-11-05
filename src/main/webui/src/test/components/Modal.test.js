@@ -42,7 +42,7 @@ describe('Modal component', () => {
     });
 
     const dialog = container.querySelector('dialog');
-    expect(dialog).toHaveClass('w-[500px]', 'h-[200px]', 'p-[25px]', 'outline-none');
+    expect(dialog).toHaveClass('w-[500px]', 'min-h-[200px]', 'p-[25px]', 'outline-none', 'rounded', 'shadow-lg', 'border', 'border-gray-300');
   });
 
   it('should render close button with icon', () => {
@@ -50,7 +50,7 @@ describe('Modal component', () => {
       props: { showModal: false }
     });
 
-    const closeButton = container.querySelector('span[title="Settings"]');
+    const closeButton = container.querySelector('button[title="Close"]');
     expect(closeButton).toBeInTheDocument();
   });
 
@@ -59,7 +59,7 @@ describe('Modal component', () => {
       props: { showModal: true }
     });
 
-    const closeButton = container.querySelector('span[title="Settings"]');
+    const closeButton = container.querySelector('button[title="Close"]');
 
     await fireEvent.click(closeButton);
 
