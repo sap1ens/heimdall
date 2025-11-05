@@ -18,6 +18,7 @@ Read more in the blog: [Heimdall: Making Operating Flink Deployments a Bit Easie
 - 📊 **Job Overview** - View status, state, and metadata for all jobs at a glance
 - 🔗 **Quick Links** - Direct access to Flink UI, metrics, and logs for each job
 - 🏷️ **Metadata Support** - Display custom labels and annotations from Kubernetes resources
+- 📄 **Pagination** - Navigate through large job lists with configurable page sizes
 - ⚡ **Performance** - In-memory caching for fast response times
 - 🔐 **Kubernetes Native** - Designed to run alongside Flink Operator in your cluster
 
