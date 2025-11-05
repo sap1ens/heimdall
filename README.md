@@ -232,8 +232,10 @@ docker buildx create --use --name multiarch-builder
 # 3. Build and push multi-arch image
 docker buildx build --platform linux/amd64,linux/arm64 \
   -f src/main/docker/Dockerfile.jvm \
-  -t ghcr.io/sap1ens/heimdall:latest \
+  -t ghcr.io/your-username/heimdall:latest \
   --push .
+
+# Note: Replace 'your-username' with your GitHub username
 ```
 
 The Dockerfile uses the distroless base image for minimal size and security.
