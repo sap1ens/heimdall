@@ -380,7 +380,6 @@
                 {/each}
                 </tbody>
             </table>
-            </div>
         {:else}
             <div class="grid gap-6 grid-cols-3">
             {#each visibleFlinkJobs as flinkJob (flinkJob.id)}
