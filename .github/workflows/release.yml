@@ -8,14 +8,11 @@ on:
         description: 'Use snapshot version?'
         required: true
 
-  # Automatic trigger on version tags (e.g., v0.10.0, 0.10.0)
+  # Automatic trigger on version tags (e.g., v0.10.0, 0.10.0) and main branch pushes
   push:
     tags:
       - 'v*'
       - '[0-9]+.[0-9]+.[0-9]+'
-
-  # Automatic snapshot releases on main branch pushes
-  push:
     branches:
       - main
 
