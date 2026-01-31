@@ -104,7 +104,7 @@ public class K8sOperatorFlinkJobLocator implements FlinkJobLocator {
               .orElse(null);
       var replicas = flinkDeployment.getSpec().getTaskManager().getReplicas();
       if (taskSlots != null && replicas != null) {
-        parallelism = Integer.parseInt(taskSlots) * replicas;
+        parallelism = taskSlots.asInt(0) * replicas;
       }
     }
     return parallelism;
