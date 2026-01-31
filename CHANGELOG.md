@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.11.0
+
+- Upgraded flink-kubernetes-operator-api to 1.13.0, which adds support for the latest Flink versions.
+
 ## 0.10.0
 
 - Enhanced image display to show full paths after registry domain (e.g., ECR URLs).
