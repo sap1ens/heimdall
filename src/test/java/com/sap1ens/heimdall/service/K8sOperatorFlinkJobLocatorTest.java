@@ -177,7 +177,7 @@ public class K8sOperatorFlinkJobLocatorTest {
     }
 
     @Override
-    public Map<String, String> endpointPathPatterns() {
+    public Map<String, String> rawEndpointPathPatterns() {
       return null;
     }
   }
