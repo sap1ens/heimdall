@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.12.0
+
+- Fixed empty endpoint path patterns
+- Upgraded flink-kubernetes-operator-api to 1.15.0, which adds support for the latest Flink versions.
+
 ## 0.11.0
 
 - Upgraded flink-kubernetes-operator-api to 1.13.0, which adds support for the latest Flink versions.
